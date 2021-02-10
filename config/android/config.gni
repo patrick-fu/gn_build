@@ -14,14 +14,13 @@ import("//build/config/chromeos/ui_mode.gni")
 if (is_android || is_chromeos_ash ||
     (is_chromeos_lacros && also_build_ash_chrome)) {
   import("//build/config/chromecast_build.gni")
-  import("//build_overrides/build.gni")
   import("abi.gni")
 
   if (build_with_chromium) {
     # Some non-chromium projects (e.g. WebRTC) use our build configs
     # heavily but don't write gclient args files.
 
-    import("//build/config/gclient_args.gni")
+    # import("//build/config/gclient_args.gni")
     if (defined(checkout_android_native_support)) {
       n = "$0x0A"  # Newline
       assert(checkout_android_native_support,

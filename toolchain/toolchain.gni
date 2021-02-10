@@ -6,7 +6,6 @@
 # toolchain() rules themselves.
 
 import("//build/config/chrome_build.gni")
-import("//build_overrides/build.gni")
 
 declare_args() {
   # If this is set to true, or if LLVM_FORCE_HEAD_REVISION is set to 1

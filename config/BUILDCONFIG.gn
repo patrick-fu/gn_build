@@ -144,6 +144,8 @@ declare_args() {
   # every toolchain can pass through the "global" value via toolchain_args().
   host_toolchain = ""
 
+  build_with_chromium = false
+
   # DON'T ADD MORE FLAGS HERE. Read the comment above.
 }
 
@@ -330,7 +332,8 @@ default_compiler_configs = [
   "//build/config/compiler:compiler",
   "//build/config/compiler:compiler_arm_fpu",
   "//build/config/compiler:compiler_arm_thumb",
-  "//build/config/compiler:chromium_code",
+  # "//build/config/compiler:chromium_code",
+  "//build/config/compiler:no_chromium_code", # Use no_chromium_code as default (patrickfu@zego.im)
   "//build/config/compiler:default_include_dirs",
   "//build/config/compiler:default_optimization",
   "//build/config/compiler:default_stack_frames",
@@ -615,4 +618,21 @@ if (rts_exclude_file != "") {
       }
     }
   }
+}
+
+
+if (is_apple && use_system_xcode == "") {
+  _result = exec_script("//build/mac/should_use_hermetic_xcode.py",
+                        [ target_os ],
+                        "value")
+
+  assert(_result != 2,
+         "Do not allow building targets with the default" +
+             "hermetic toolchain if the minimum OS version is not met.")
+  assert(_result != 3,
+         "iOS does not support building with a hermetic toolchain. " +
+             "Please install Xcode.")
+
+  use_system_xcode = _result != 1
+  assert(host_os == "mac" || !use_system_xcode)
 }

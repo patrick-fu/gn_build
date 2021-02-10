@@ -7,7 +7,6 @@ import("//build/config/mac/base_rules.gni")
 import("//build/config/mac/symbols.gni")
 import("//build/toolchain/goma.gni")
 import("//build/toolchain/toolchain.gni")
-import("//build_overrides/build.gni")
 
 # Constants corresponding to the bundle type identifiers use application,
 # application extension, XCTest and XCUITest targets respectively.
