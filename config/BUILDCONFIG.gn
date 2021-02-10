@@ -150,6 +150,15 @@ declare_args() {
 }
 
 declare_args() {
+  # Use the system install of Xcode for tools like ibtool, libtool, etc.
+  # This does not affect the compiler. When this variable is false, targets will
+  # instead use a hermetic install of Xcode. [The hermetic install can be
+  # obtained with gclient sync after setting the environment variable
+  # FORCE_MAC_TOOLCHAIN for target_os mac only].
+  use_system_xcode = true
+}
+
+declare_args() {
   # Debug build. Enabling official builds automatically sets is_debug to false.
   is_debug = !is_official_build
 }

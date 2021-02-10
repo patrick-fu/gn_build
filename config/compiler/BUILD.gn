@@ -1562,7 +1562,8 @@ config("default_warnings") {
         cflags += [ "-Wno-nonportable-include-path" ]
       }
 
-      if (current_toolchain == host_toolchain || !use_xcode_clang) {
+      # if (current_toolchain == host_toolchain || !use_xcode_clang) {
+      if (!use_xcode_clang) { # Avoid unknown flag of macOS with Xcode's clang (patrickfu@zego.im)
         # Flags NaCl (Clang 3.7) and Xcode 9.2 (Clang clang-900.0.39.2) do not
         # recognize.
         cflags += [
@@ -2355,7 +2356,8 @@ config("symbols") {
     }
 
     # TODO(https://crbug.com/1050118): Investigate missing debug info on mac.
-    if (is_clang && !is_nacl && !use_xcode_clang && !is_apple) {
+    # Dose not support by Android NDK's clang
+    if (is_clang && !is_nacl && !use_xcode_clang && !is_apple && !is_android) {
       cflags += [
         "-Xclang",
         "-debug-info-kind=constructor",
