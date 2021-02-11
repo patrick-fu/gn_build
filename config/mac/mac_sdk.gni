@@ -26,6 +26,14 @@ declare_args() {
   # Must be of the form x.x.x for Info.plist files.
   mac_min_system_version = "10.11.0"
 
+  # Prefix for CFBundleIdentifier property of macOS bundles (correspond to the
+  # "Organization Identifier" in Xcode). Code signing will fail if no mobile
+  # provisioning for the selected code signing identify support that prefix.
+  #
+  # You can customize this prefix by override this args when executing `gn gen`
+  # e.g. ` gn gen out/mac --args='mac_app_bundle_id_prefix="com.example"' `
+  mac_app_bundle_id_prefix = "org.chromium"
+
   # Path to a specific version of the Mac SDK, not including a slash at the end.
   # If empty, the path to the lowest version greater than or equal to
   # mac_sdk_min is used.
