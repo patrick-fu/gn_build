@@ -198,9 +198,12 @@ template("mac_toolchain") {
     # If dSYMs are enabled, this flag will be added to the link tools.
     if (_enable_dsyms) {
       dsym_switch = " -Wcrl,dsym,{{root_out_dir}} "
-      dsym_switch += "-Wcrl,dsymutilpath," +
-                     rebase_path("//tools/clang/dsymutil/bin/dsymutil",
-                                 root_build_dir) + " "
+
+      # Use Xcode's dsymutil when use_xcode_clang is true (patrickfu@zego.im)
+      if (!use_xcode_clang) {
+        dsym_switch += "-Wcrl,dsymutilpath," +
+          rebase_path("//tools/clang/dsymutil/bin/dsymutil", root_build_dir) + " "
+      }
 
       dsym_output_dir =
           "{{root_out_dir}}/{{target_output_name}}{{output_extension}}.dSYM"
