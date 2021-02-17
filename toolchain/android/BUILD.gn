@@ -46,9 +46,6 @@ template("android_clang_toolchain") {
     _android_tool_prefix =
         "$android_toolchain_root/bin/${invoker.binary_prefix}-"
 
-    _android_tool_prefix_with_ver =
-        "$android_toolchain_root/bin/${invoker.binary_prefix}${default_android_sdk_version}-"
-
     # The tools should be run relative to the build dir.
     _tool_prefix = rebase_path("$_android_tool_prefix", root_build_dir)
 
@@ -58,8 +55,8 @@ template("android_clang_toolchain") {
     # ar = "$_prefix/llvm-ar"
 
     # Force use NDK's toolchain (patrickfu@zego.im)
-    cc = _android_tool_prefix_with_ver + "clang"
-    cxx = _android_tool_prefix_with_ver + "clang++"
+    cc = "$android_toolchain_root/bin/clang"
+    cxx = "$android_toolchain_root/bin/clang++"
     ar = "$android_toolchain_root/bin/llvm-ar"
     ld = cxx
     readelf = _tool_prefix + "readelf"
