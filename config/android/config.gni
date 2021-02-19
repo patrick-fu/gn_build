@@ -76,13 +76,16 @@ if (is_android || is_chromeos_ash ||
     }
   }
 
+  # You should set ndk path and ndk version by override `android_ndk_root`
+  # and `android_ndk_version` args when executing `gn gen`
+  #
+  # e.g. ` gn gen out/android --args='android_ndk_root="/Users/patrickfu/Library/Android/sdk/ndk/21.3.6528147" android_ndk_version="r21d"' `
+  #
   if (!defined(default_android_ndk_root)) {
     default_android_ndk_root = "//third_party/android_ndk"
     default_android_ndk_version = "r22"
-    default_android_ndk_major_version = 22
   } else {
     assert(defined(default_android_ndk_version))
-    assert(defined(default_android_ndk_major_version))
   }
 
   public_android_sdk_root = "//third_party/android_sdk/public"
@@ -166,7 +169,6 @@ if (is_android || is_chromeos_ash ||
   declare_args() {
     android_ndk_root = default_android_ndk_root
     android_ndk_version = default_android_ndk_version
-    android_ndk_major_version = default_android_ndk_major_version
 
     android_sdk_root = default_android_sdk_root
     android_sdk_version = default_android_sdk_version
