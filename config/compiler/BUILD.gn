@@ -1597,12 +1597,13 @@ config("default_warnings") {
           "-Wno-implicit-fallthrough",
         ]
 
-        if (enable_wmax_tokens) {
-          cflags += [ "-Wmax-tokens" ]
-        } else {
-          # TODO(https://crbug.com/1049569): Remove after Clang 87b235db.
-          cflags += [ "-Wno-max-tokens" ]
-        }
+        # Does not support by Android NDK's clang (patrickfu@zego.im)
+        # if (enable_wmax_tokens) {
+        #   cflags += [ "-Wmax-tokens" ]
+        # } else {
+        #   # TODO(https://crbug.com/1049569): Remove after Clang 87b235db.
+        #   cflags += [ "-Wno-max-tokens" ]
+        # }
       }
     }
   }
