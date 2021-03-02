@@ -98,7 +98,7 @@ declare_args() {
 
   # Where to redirect clang crash diagnoses
   clang_diagnostic_dir =
-      rebase_path("//tools/clang/crashreports", root_build_dir)
+      rebase_path("//tools/clang/crashreports")
 
   # Mark binaries as compatible with Shadow Stack of Control-flow Enforcement
   # Technology (CET). If Windows version and hardware supports the feature and

@@ -91,7 +91,7 @@ config("compiler") {
 # :runtime_library vs. :compiler.
 config("runtime_library") {
   # Let the linker find libgcc.a.
-  ldflags = [ "-B" + rebase_path(android_toolchain_root, root_build_dir) ]
+  ldflags = [ "-B" + rebase_path(android_toolchain_root) ]
 
   libs = []
 
@@ -125,14 +125,12 @@ config("runtime_library") {
 
 config("hide_all_but_jni_onload") {
   ldflags = [ "-Wl,--version-script=" + rebase_path(
-                  "//build/android/android_only_explicit_jni_exports.lst",
-                  root_build_dir) ]
+                  "//build/android/android_only_explicit_jni_exports.lst") ]
 }
 
 config("hide_all_but_jni") {
   ldflags = [ "-Wl,--version-script=" +
-              rebase_path("//build/android/android_only_jni_exports.lst",
-                          root_build_dir) ]
+              rebase_path("//build/android/android_only_jni_exports.lst") ]
 }
 
 config("lld_pack_relocations") {

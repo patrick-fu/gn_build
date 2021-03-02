@@ -47,7 +47,7 @@ template("android_clang_toolchain") {
         "$android_toolchain_root/bin/${invoker.binary_prefix}-"
 
     # The tools should be run relative to the build dir.
-    _tool_prefix = rebase_path("$_android_tool_prefix", root_build_dir)
+    _tool_prefix = rebase_path("$_android_tool_prefix")
 
     # _prefix = rebase_path("$clang_base_path/bin", root_build_dir)
     # cc = "$_prefix/clang"
