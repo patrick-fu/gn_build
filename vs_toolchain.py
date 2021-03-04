@@ -50,7 +50,7 @@ def SetEnvironmentAndGetRuntimeDllDirs():
   """
   vs_runtime_dll_dirs = None
   depot_tools_win_toolchain = \
-      bool(int(os.environ.get('DEPOT_TOOLS_WIN_TOOLCHAIN', '1')))
+      bool(int(os.environ.get('DEPOT_TOOLS_WIN_TOOLCHAIN', '0')))
   # When running on a non-Windows host, only do this if the SDK has explicitly
   # been downloaded before (in which case json_data_file will exist).
   if ((_HostIsWindows() or os.path.exists(json_data_file))
@@ -143,7 +143,7 @@ def GetVisualStudioVersion():
   supported_versions = list(MSVS_VERSIONS.keys())
 
   # VS installed in depot_tools for Googlers
-  if bool(int(os.environ.get('DEPOT_TOOLS_WIN_TOOLCHAIN', '1'))):
+  if bool(int(os.environ.get('DEPOT_TOOLS_WIN_TOOLCHAIN', '0'))):
     return supported_versions[0]
 
   # VS installed in system for external developers
@@ -477,7 +477,7 @@ def Update(force=False, no_download=False):
     force = True
 
   depot_tools_win_toolchain = \
-      bool(int(os.environ.get('DEPOT_TOOLS_WIN_TOOLCHAIN', '1')))
+      bool(int(os.environ.get('DEPOT_TOOLS_WIN_TOOLCHAIN', '0')))
   if (_HostIsWindows() or force) and depot_tools_win_toolchain:
     import find_depot_tools
     depot_tools_path = find_depot_tools.add_depot_tools_to_path()
