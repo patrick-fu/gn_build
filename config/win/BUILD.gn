@@ -194,6 +194,10 @@ config("compiler") {
   ]
 }
 
+config("crt_secure_no_deprecate") {
+  defines = [ "_CRT_SECURE_NO_DEPRECATE" ]
+}
+
 # This is included by reference in the //build/config/compiler:runtime_library
 # config that is applied to all targets. It is here to separate out the logic
 # that is Windows-only. Please see that target for advice on what should go in
@@ -206,9 +210,9 @@ config("runtime_library") {
   defines = [
     "__STD_C",
     "_CRT_RAND_S",
-    "_CRT_SECURE_NO_DEPRECATE",
     "_SCL_SECURE_NO_DEPRECATE",
   ]
+  configs = [ ":crt_secure_no_deprecate" ]
 
   # Defines that set up the Windows SDK.
   defines += [
