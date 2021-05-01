@@ -353,14 +353,19 @@ config("compiler") {
     # Explicitly pass --build-id to ld. Compilers used to always pass this
     # implicitly but don't any more (in particular clang when built without
     # ENABLE_LINKER_BUILD_ID=ON).
-    if (is_official_build) {
-      # The sha1 build id has lower risk of collision but is more expensive to
-      # compute, so only use it in the official build to avoid slowing down
-      # links.
-      ldflags += [ "-Wl,--build-id=sha1" ]
-    } else if (current_os != "aix") {
-      ldflags += [ "-Wl,--build-id" ]
-    }
+    # if (is_official_build) {
+    #   # The sha1 build id has lower risk of collision but is more expensive to
+    #   # compute, so only use it in the official build to avoid slowing down
+    #   # links.
+    #   ldflags += [ "-Wl,--build-id=sha1" ]
+    # } else if (current_os != "aix") {
+    #   ldflags += [ "-Wl,--build-id" ]
+    # }
+
+    # ZEGO: Breakpoints never hit in native code when using LLD, because a lldb bug:
+    # https://github.com/android/ndk/issues/885#issuecomment-508257362
+    # So force it use sha1 even is debug
+    ldflags += [ "-Wl,--build-id=sha1" ]
 
     if (!is_android) {
       defines += [
