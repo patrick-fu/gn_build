@@ -23,6 +23,9 @@ declare_args() {
 
   # Used for binary size analysis.
   generate_linker_map = is_android && is_official_build
+
+  # If this is set to true, MSVC's cc/cxx would not use '/showIncludes' argument.
+  no_show_includes = false
 }
 
 if (generate_linker_map) {
