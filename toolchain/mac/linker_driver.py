@@ -94,6 +94,7 @@ def Main(args):
     if deterministic:
       env['ZERO_AR_DATE'] = '1'
     # Run the linker by invoking the compiler driver.
+    print('[linker_driver] %s' % ' '.join(compiler_driver_args))
     subprocess.check_call(compiler_driver_args, env=env)
 
     # Run the linker driver actions, in the order specified by the actions list.
@@ -166,8 +167,9 @@ def RunDsymUtil(dsym_path_prefix, full_args):
     tools_paths.append(os.environ['PATH'])
   dsymutil_env = os.environ.copy()
   dsymutil_env['PATH'] = ':'.join(tools_paths)
-  subprocess.check_call(DSYMUTIL_INVOKE + ['-o', dsym_out, linker_out],
-                        env=dsymutil_env)
+  dsymutil_cmd = DSYMUTIL_INVOKE + ['-o', dsym_out, linker_out]
+  print('[linker_driver] %s' % dsymutil_cmd)
+  subprocess.check_call(dsymutil_cmd, env=dsymutil_env)
   return [dsym_out]
 
 
@@ -227,6 +229,7 @@ def RunStrip(strip_args_string, full_args):
   if len(strip_args_string) > 0:
     strip_command += strip_args_string.split(',')
   strip_command.append(_FindLinkerOutput(full_args))
+  print('[linker_driver] %s' % ' '.join(strip_command))
   subprocess.check_call(strip_command)
   return []
 
