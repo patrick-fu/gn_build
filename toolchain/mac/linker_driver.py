@@ -168,7 +168,7 @@ def RunDsymUtil(dsym_path_prefix, full_args):
   dsymutil_env = os.environ.copy()
   dsymutil_env['PATH'] = ':'.join(tools_paths)
   dsymutil_cmd = DSYMUTIL_INVOKE + ['-o', dsym_out, linker_out]
-  print('[linker_driver] %s' % dsymutil_cmd)
+  print('[linker_driver] %s' % ' '.join(dsymutil_cmd))
   subprocess.check_call(dsymutil_cmd, env=dsymutil_env)
   return [dsym_out]
 
