@@ -47,6 +47,7 @@ def CommandToRun(command):
   """
   if command[0].startswith(_BAT_PREFIX):
     command = command[0].split(None, 3) + command[1:]
+  print('[linker_wrapper] %s' % ' '.join(command))
   return command
 
 
