@@ -178,7 +178,7 @@ template("mac_toolchain") {
     # builds). The correct flags are passed to the linker_driver.py script
     # directly during the lipo call. The test is against the target_os because
     # there is no need to create .dSYMs for targets compiled for the host.
-    if (target_os != "ios") {
+    if (target_os != "ios" || enable_ios_dylib_dsyms) {
       _enable_dsyms = enable_dsyms
       _save_unstripped_output = save_unstripped_output
     } else {

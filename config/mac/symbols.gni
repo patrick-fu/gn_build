@@ -16,6 +16,12 @@ declare_args() {
   # generated.
   enable_dsyms = is_official_build || using_sanitizer
 
+  # The iOS dylib (standard "shared_library" target) dose not enable dSYM by
+  # default, because if build with "ios_framework_bundle" template, the
+  # dSYM will be generated after lipo. If you need to build iOS dylib rather
+  # than framework, you need to set this flag to true to generate dSYM
+  enable_ios_dylib_dsyms = false
+
   # Strip symbols from linked targets by default. If this is enabled, the
   # //build/config/mac:strip_all config will be applied to all linked targets.
   # If custom stripping parameters are required, remove that config from a
