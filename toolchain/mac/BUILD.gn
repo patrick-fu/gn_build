@@ -330,9 +330,9 @@ template("mac_toolchain") {
       does_reexport_command = "[ ! -e \"$dylib\" -o ! -e \"$tocname\" ] || $otool -l \"$dylib\" | grep -q LC_REEXPORT_DYLIB"
 
       link_command = "$linker_driver $ld -shared "
-      if (is_component_build) {
-        link_command += " -Wl,-install_name,@rpath/\"{{target_output_name}}{{output_extension}}\" "
-      }
+      # Always set a default install_name first, you can override it by
+      # setting your own install_name in "ldflags"
+      link_command += " -Wl,-install_name,@rpath/\"{{target_output_name}}{{output_extension}}\" "
       link_command += dsym_switch
       link_command += "{{ldflags}} -o \"$dylib\" -Wl,-filelist,\"$rspfile\" {{frameworks}} {{swiftmodules}} {{solibs}} {{libs}}"
 
@@ -382,9 +382,9 @@ template("mac_toolchain") {
       pool = "//build/toolchain:link_pool($default_toolchain)"
 
       link_command = "$linker_driver $ld -bundle {{ldflags}} -o \"$sofile\" -Wl,-filelist,\"$rspfile\""
-      if (is_component_build) {
-        link_command += " -Wl,-install_name,@rpath/{{target_output_name}}{{output_extension}}"
-      }
+      # Always set a default install_name first, you can override it by
+      # setting your own install_name in "ldflags"
+      link_command += " -Wl,-install_name,@rpath/{{target_output_name}}{{output_extension}}"
       link_command += dsym_switch
       link_command += " {{frameworks}} {{swiftmodules}} {{solibs}} {{libs}}"
       command = link_command
