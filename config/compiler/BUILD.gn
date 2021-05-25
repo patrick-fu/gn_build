@@ -1837,6 +1837,8 @@ config("exceptions") {
       defines = [ "_HAS_EXCEPTIONS=1" ]
     }
     cflags_cc = [ "/EHsc" ]
+    cflags = [ "/d2FH4-" ] # disable it , see https://devblogs.microsoft.com/cppblog/making-cpp-exception-handling-smaller-x64/
+    ldflags = [ "/d2:-FH4-" ]
   } else {
     cflags_cc = [ "-fexceptions" ]
     cflags_objcc = cflags_cc
