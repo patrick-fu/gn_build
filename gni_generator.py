@@ -48,6 +48,8 @@ def generate_gni(root_path: str, gni_name: str, include_file_type=DEFAULT_TYPE) 
     filelist.sort()
     for f in filelist:
         f = f[len(PROJ_ROOT):].lstrip(os.sep)
+        # Convert windows style separator to unix style
+        f = f.replace('\\', '/')
         file_str = '  "//{}",\n'.format(f)
         filelist_str += file_str
 
