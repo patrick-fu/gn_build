@@ -67,7 +67,7 @@ def main(argv):
     parser = argparse.ArgumentParser(description=HELP)
     parser.add_argument('root_path', type=str, help='The root sources path to perform generating GNI.')
     parser.add_argument('gni_name', type=str, help='The project or module name for the root path dir.')
-    parser.add_argument('--include-type', action='store', type=str, nargs='+', choices=DEFAULT_TYPE, default=DEFAULT_TYPE, help='What type of files need to be collected. Defaults to DEFAULT_TYPE.')
+    parser.add_argument('--include-type', action='store', type=str, nargs='+', default=DEFAULT_TYPE, help='What type of files need to be collected. Defaults to [%s].' % ','.join(DEFAULT_TYPE))
 
     args = parser.parse_args(argv)
 
