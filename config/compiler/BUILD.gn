@@ -2310,11 +2310,22 @@ config("win_pdbaltpath") {
 # Full symbols.
 config("symbols") {
   if (is_win) {
-    if (is_clang) {
-      cflags = [ "/Z7" ]  # Debug information in the .obj files.
-    } else {
-      cflags = [ "/Zi" ]  # Produce PDB file, no edit and continue.
-    }
+    # if (is_clang) {
+    #   cflags = [ "/Z7" ]  # Debug information in the .obj files.
+    # } else {
+    #   cflags = [ "/Zi" ]  # Produce PDB file, no edit and continue.
+    # }
+
+    # We can always use /Z7 to compile static libraries
+    # 1. /Z7 will type the symbol into obj, no need to deal with the distribution of static library pdb
+    # 2. The /ZI+/Fd method will reduce the efficiency of parallel compilation (conflicting access to the same pdb file)
+    # 3. Even if /Z7 is used, when msvc compiles the dynamic library, it will still extract the symbol information into the pdb file 
+    cflags = [ "/Z7" ]  
+
+    # /Z7 see https://docs.microsoft.com/en-us/cpp/build/reference/z7-zi-zi-debug-information-format?view=msvc-160
+    # /Zi or /ZI may cause C1090 error during parallel compilation 
+    # see https://docs.microsoft.com/en-us/cpp/error-messages/compiler-errors-1/fatal-error-c1090?view=msvc-160
+    # see https://docs.microsoft.com/en-us/cpp/build/reference/zf?view=msvc-160
 
     if (is_clang && use_lld && use_ghash) {
       cflags += [ "-gcodeview-ghash" ]
