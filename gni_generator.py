@@ -19,7 +19,7 @@ function from other python script.
 
 DEFAULT_TYPE = ['h', 'c', 'cc', 'cpp', 'hpp', 'm', 'mm']
 
-def collect_files(root_path: str , filelist: List[str] , recursive: bool , include_file_type=DEFAULT_TYPE):
+def collect_files(root_path: str , filelist: List[str] , recursive: bool , include_file_type=DEFAULT_TYPE) -> List[str]:
     """
     Recursive list files under root_path
 
