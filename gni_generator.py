@@ -19,7 +19,36 @@ function from other python script.
 
 DEFAULT_TYPE = ['h', 'c', 'cc', 'cpp', 'hpp', 'm', 'mm']
 
-def generate_gni(root_path: str, gni_name: str, include_file_type=DEFAULT_TYPE) -> str:
+def collect_files(root_path: str , filelist: List[str] , recursive: bool , include_file_type=DEFAULT_TYPE):
+    """
+    Recursive list files under root_path
+
+    Args:
+        root_path (str): Folder path to be list
+        filelist (str): target file list
+        recursive (bool): Whether traverse subfolders recursively 
+
+        include_file_type ([type], optional): What type of files need to be collected. Defaults to DEFAULT_TYPE.
+
+    Returns:
+        List[str]: filelist
+    """
+    files = os.listdir(root_path)
+    for name in files:
+        if os.path.isdir(os.path.join(root_path, name)) :
+            if recursive:
+                collect_files(os.path.join(root_path, name), filelist, recursive,include_file_type)
+            else:
+                continue
+        else:
+            if name.split('.')[-1] not in include_file_type:
+                continue
+            # Only collect specific type files
+            filelist.append(os.path.join(root_path, name))
+
+    return filelist
+
+def generate_gni(root_path: str, gni_name: str, recursive: bool , include_file_type=DEFAULT_TYPE) -> str:
     """
     Recursive list files under root_path, and generate a .gni
     file which contains a list var names "${gni_name}",
@@ -28,6 +57,7 @@ def generate_gni(root_path: str, gni_name: str, include_file_type=DEFAULT_TYPE) 
     Args:
         root_path (str): Folder path to be list
         gni_name (str): gni's name
+        recursive (bool): Whether traverse subfolders recursively 
 
         include_file_type ([type], optional): What type of files need to be collected. Defaults to DEFAULT_TYPE.
 
@@ -38,12 +68,7 @@ def generate_gni(root_path: str, gni_name: str, include_file_type=DEFAULT_TYPE) 
     filelist_str = ''
     root_path = os.path.realpath(os.path.join(CWD_PATH, root_path))
 
-    for root, _, files in os.walk(root_path):
-        for name in files:
-            if name.split('.')[-1] not in include_file_type:
-                continue
-            # Only collect specific type files
-            filelist.append(os.path.join(root, name))
+    collect_files(root_path,filelist,recursive,include_file_type)
 
     filelist.sort()
     for f in filelist:
@@ -69,12 +94,14 @@ def main(argv):
     parser.add_argument('root_path', type=str, help='The root sources path to perform generating GNI.')
     parser.add_argument('gni_name', type=str, help='The project or module name for the root path dir.')
     parser.add_argument('--include-type', action='store', type=str, nargs='+', default=DEFAULT_TYPE, help='What type of files need to be collected. Defaults to [%s].' % ','.join(DEFAULT_TYPE))
+    parser.add_argument('--norecursive', default=False, action='store_true', help='Whether disable traverse subfolders recursively.Defaults to True')
 
     args = parser.parse_args(argv)
 
     file_path = generate_gni(
         args.root_path,
         args.gni_name,
+        not args.norecursive,
         include_file_type=args.include_type
     )
     print('[Generate GNI] Ouput: "%s"' % file_path)
