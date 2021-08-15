@@ -7,7 +7,6 @@ import("//build/config/ios/ios_sdk_overrides.gni")
 import("//build/toolchain/goma.gni")
 import("//build/toolchain/goma.gni")
 import("//build/toolchain/toolchain.gni")
-import("//build_overrides/build.gni")
 
 assert(current_os == "ios")
 assert(use_system_xcode, "Hermetic xcode doesn't work for ios.")
@@ -38,14 +37,25 @@ declare_args() {
   # left unspecified if ios_code_signing_identity_description is used instead.
   ios_code_signing_identity = ""
 
-  # Pattern used to select the identity to use for codesigning. If defined,
+  # Cert type pattern used to select the identity to use for codesigning. If defined,
   # must be a substring of the description of exactly one of the identities by
   # `security find-identity -v -p codesigning`.
   ios_code_signing_identity_description = "Apple Development"
 
+  # Team name pattern used to select the identity to use for codesigning. If defined,
+  # must be a substring of the description of exactly one of the identities by
+  # `security find-identity -v -p codesigning`.
+  #
+  # You can customize this team name by override this args when executing `gn gen`
+  # e.g. ` gn gen out/ios --args='ios_code_signing_identity_team_name="Zego Technology"' `
+  ios_code_signing_identity_team_name = ""
+
   # Prefix for CFBundleIdentifier property of iOS bundles (correspond to the
   # "Organization Identifier" in Xcode). Code signing will fail if no mobile
   # provisioning for the selected code signing identify support that prefix.
+  #
+  # You can customize this prefix by override this args when executing `gn gen`
+  # e.g. ` gn gen out/ios --args='ios_app_bundle_id_prefix="com.example"' `
   ios_app_bundle_id_prefix = "org.chromium"
 
   # If non-empty, this list must contain valid cpu architecture, and the final
@@ -174,8 +184,10 @@ if (target_environment == "device" && ios_enable_code_signing) {
     find_signing_identity_args = []
     if (ios_code_signing_identity_description != "") {
       find_signing_identity_args = [
-        "--matching-pattern",
+        "--cert-pattern",
         ios_code_signing_identity_description,
+        "--team-pattern",
+        ios_code_signing_identity_team_name,
       ]
     }
     ios_code_signing_identity = exec_script("find_signing_identity.py",

@@ -5,7 +5,6 @@
 import("//build/config/ios/ios_sdk.gni")
 import("//build/toolchain/goma.gni")
 import("//build/toolchain/toolchain.gni")
-import("//build_overrides/build.gni")
 
 declare_args() {
   # Enabling this option makes clang compile to an intermediate
@@ -21,7 +20,7 @@ declare_args() {
   # Intel assembly syntax; Yasm / Nasm do not support emitting bitcode parts.
   # That is not a limitation for now as Xcode mandates the presence of bitcode
   # only when building bitcode-enabled projects for real devices (ARM CPUs).
-  enable_ios_bitcode = false
+  enable_ios_bitcode = true
 }
 
 # This is included by reference in the //build/config/compiler config that

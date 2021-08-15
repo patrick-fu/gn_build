@@ -44,6 +44,7 @@ declare_args() {
 use_custom_libcxx =
     use_custom_libcxx || (use_custom_libcxx_for_host && !is_a_target_toolchain)
 use_custom_libcxx = use_custom_libcxx && !is_nacl
+use_custom_libcxx = false # Force use system libcxx (patrickfu@zego.im)
 
 declare_args() {
   # WARNING: Setting this to a non-default value is highly discouraged.

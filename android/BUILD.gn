@@ -6,7 +6,6 @@ import("//build/config/android/build_vars.gni")
 import("//build/config/android/config.gni")
 import("//build/config/android/rules.gni")
 import("//build/config/python.gni")
-import("//build_overrides/build.gni")
 
 if (enable_java_templates) {
   # Create or update the API versions cache if necessary by running a
@@ -55,7 +54,7 @@ python_library("devil_chromium_py") {
     "//third_party/catapult/devil/devil/devil_dependencies.json",
 
     # Read by gn_helpers.BuildWithChromium()
-    "//build/config/gclient_args.gni",
+    # "//build/config/gclient_args.gni",
   ]
 }
 

@@ -457,7 +457,7 @@ template("gcc_toolchain") {
       # requiring sh control structures, pipelines, and POSIX utilities.
       # The host might not have a POSIX shell and utilities (e.g. Windows).
       solink_wrapper =
-          rebase_path("//build/toolchain/gcc_solink_wrapper.py", root_build_dir)
+          rebase_path("//build/toolchain/gcc_solink_wrapper.py")
       command = "$python_path \"$solink_wrapper\" --readelf=\"$readelf\" --nm=\"$nm\" $strip_switch$dwp_switch --sofile=\"$unstripped_sofile\" --tocfile=\"$tocfile\"$map_switch --output=\"$sofile\" -- $link_command"
 
       if (target_cpu == "mipsel" && is_component_build && is_android) {
@@ -606,7 +606,7 @@ template("gcc_toolchain") {
       }
 
       link_wrapper =
-          rebase_path("//build/toolchain/gcc_link_wrapper.py", root_build_dir)
+          rebase_path("//build/toolchain/gcc_link_wrapper.py")
       command = "$python_path \"$link_wrapper\" --output=\"$outfile\"$strip_switch$map_switch$dwp_switch -- $link_command"
 
       description = "LINK $outfile"
@@ -673,7 +673,7 @@ template("clang_toolchain") {
   }
 
   gcc_toolchain(target_name) {
-    prefix = rebase_path("$clang_base_path/bin", root_build_dir)
+    prefix = rebase_path("$clang_base_path/bin")
     cc = "$prefix/clang"
     cxx = "$prefix/clang++"
     ld = cxx

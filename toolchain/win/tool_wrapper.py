@@ -17,6 +17,12 @@ import subprocess
 import stat
 import sys
 
+try:
+  import chardet
+  can_import_chardet = True
+except:
+  can_import_chardet = False
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -144,7 +150,14 @@ class WinTool(object):
       if (not line.startswith(b'   Creating library ')
           and not line.startswith(b'Generating code')
           and not line.startswith(b'Finished generating code')):
-        print(line)
+        if can_import_chardet:
+          encoding = chardet.detect(line)['encoding']
+          try:
+            print(line.decode(encoding))
+          except:
+            print(line)
+        else:
+          print(line)
     return link.wait()
 
   def ExecAsmWrapper(self, arch, *args):

@@ -122,6 +122,11 @@ config("debug") {
     defines += [ "DYNAMIC_ANNOTATIONS_PREFIX=NACL_" ]
   }
 
+  if (is_apple) {
+    # Apple's system framework prefer "-DDEBUG=1" macro
+    defines += [ "DEBUG=1" ]
+  }
+
   if (is_win) {
     if (!enable_iterator_debugging && !use_custom_libcxx) {
       # Iterator debugging is enabled by default by the compiler on debug

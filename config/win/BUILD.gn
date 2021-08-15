@@ -9,7 +9,8 @@ import("//build/config/compiler/compiler.gni")
 import("//build/config/sanitizers/sanitizers.gni")
 import("//build/config/win/control_flow_guard.gni")
 import("//build/config/win/visual_studio_version.gni")
-import("//build/timestamp.gni")
+# TODO: The /TIMESTAMP ldflag seems useless (patrickfu@zego.im)
+# import("//build/timestamp.gni")
 import("//build/toolchain/goma.gni")
 import("//build/toolchain/toolchain.gni")
 
@@ -146,7 +147,9 @@ config("compiler") {
     # build/compute_build_timestamp.py for how the timestamp is chosen.
     # (link.exe also writes the current time, but it doesn't have a flag to
     # override that behavior.)
-    ldflags += [ "/TIMESTAMP:" + build_timestamp ]
+    #
+    # TODO: The /TIMESTAMP ldflag seems useless (patrickfu@zego.im)
+    # ldflags += [ "/TIMESTAMP:" + build_timestamp ]
 
     # Don't look for libpaths in %LIB%, similar to /X in cflags above.
     ldflags += [ "/lldignoreenv" ]
@@ -190,6 +193,10 @@ config("compiler") {
   ]
 }
 
+config("crt_secure_no_deprecate") {
+  defines = [ "_CRT_SECURE_NO_DEPRECATE" ]
+}
+
 # This is included by reference in the //build/config/compiler:runtime_library
 # config that is applied to all targets. It is here to separate out the logic
 # that is Windows-only. Please see that target for advice on what should go in
@@ -202,9 +209,9 @@ config("runtime_library") {
   defines = [
     "__STD_C",
     "_CRT_RAND_S",
-    "_CRT_SECURE_NO_DEPRECATE",
     "_SCL_SECURE_NO_DEPRECATE",
   ]
+  configs = [ ":crt_secure_no_deprecate" ]
 
   # Defines that set up the Windows SDK.
   defines += [

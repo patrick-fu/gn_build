@@ -157,7 +157,7 @@ template("apple_toolchain") {
     # builds). The correct flags are passed to the linker_driver.py script
     # directly during the lipo call. The test is against the target_os because
     # there is no need to create .dSYMs for targets compiled for the host.
-    if (defined(invoker.strip_with_lipo) && invoker.strip_with_lipo) {
+    if (defined(invoker.strip_with_lipo) && invoker.strip_with_lipo && !enable_ios_dylib_dsyms) {
       _enable_dsyms = false
       _save_unstripped_output = false
     } else {
@@ -177,9 +177,12 @@ template("apple_toolchain") {
     # If dSYMs are enabled, this flag will be added to the link tools.
     if (_enable_dsyms) {
       dsym_switch = " -Wcrl,dsym,{{root_out_dir}} "
-      dsym_switch += "-Wcrl,dsymutilpath," +
-                     rebase_path("//tools/clang/dsymutil/bin/dsymutil",
-                                 root_build_dir) + " "
+      # Use Xcode's dsymutil when use_xcode_clang is true (patrickfu@zego.im)
+      if (!toolchain_uses_xcode_clang) {
+        dsym_switch += "-Wcrl,dsymutilpath," +
+                      rebase_path("//tools/clang/dsymutil/bin/dsymutil",
+                                  root_build_dir) + " "
+      }
 
       dsym_output_dir =
           "{{root_out_dir}}/{{target_output_name}}{{output_extension}}.dSYM"
@@ -311,9 +314,9 @@ template("apple_toolchain") {
       does_reexport_command = "[ ! -e \"$dylib\" -o ! -e \"$tocname\" ] || $otool -l \"$dylib\" | grep -q LC_REEXPORT_DYLIB"
 
       link_command = "$linker_driver $ld -shared "
-      if (is_component_build) {
-        link_command += " -Wl,-install_name,@rpath/\"{{target_output_name}}{{output_extension}}\" "
-      }
+      # Always set a default install_name first, you can override it by
+      # setting your own install_name in "ldflags"
+      link_command += " -Wl,-install_name,@rpath/\"{{target_output_name}}{{output_extension}}\" "
       link_command += dsym_switch
       link_command += "{{ldflags}} -o \"$dylib\" -Wl,-filelist,\"$rspfile\" {{frameworks}} {{swiftmodules}} {{solibs}} {{libs}}"
 

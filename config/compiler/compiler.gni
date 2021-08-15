@@ -11,7 +11,6 @@ import("//build/config/sanitizers/sanitizers.gni")
 import("//build/toolchain/cc_wrapper.gni")
 import("//build/toolchain/goma.gni")
 import("//build/toolchain/toolchain.gni")
-import("//build_overrides/build.gni")
 
 if (is_android) {
   import("//build/config/android/abi.gni")
@@ -67,11 +66,12 @@ declare_args() {
   # Use it by default on official-optimized android and Chrome OS builds, but
   # not ARC or linux-chromeos since it's been seen to not play nicely with
   # Chrome's clang. crbug.com/1033839
-  use_thin_lto =
-      is_cfi ||
-      (is_official_build && chrome_pgo_phase != 1 &&
-       (is_linux || is_win || (is_android && target_os != "chromeos") ||
-        ((is_chromeos_ash || is_chromeos_lacros) && is_chromeos_device)))
+  use_thin_lto = is_cfi # Disable ThinLTO for Android (patrickfu@zego.im)
+  # use_thin_lto =
+  #     is_cfi ||
+  #     (is_official_build && chrome_pgo_phase != 1 &&
+  #      (is_linux || is_win || (is_android && target_os != "chromeos") ||
+  #       ((is_chromeos_ash || is_chromeos_lacros) && is_chromeos_device)))
 
   # If true, use Goma for ThinLTO code generation where applicable.
   use_goma_thin_lto = false
@@ -103,7 +103,7 @@ declare_args() {
 
   # Where to redirect clang crash diagnoses
   clang_diagnostic_dir =
-      rebase_path("//tools/clang/crashreports", root_build_dir)
+      rebase_path("//tools/clang/crashreports")
 
   # Mark binaries as compatible with Shadow Stack of Control-flow Enforcement
   # Technology (CET). If Windows version and hardware supports the feature and
@@ -230,12 +230,8 @@ strip_absolute_paths_from_debug_symbols_default =
 
 # If the platform uses stripped absolute paths by default, then we don't expose
 # it as a configuration option. If this is causing problems, please file a bug.
-if (strip_absolute_paths_from_debug_symbols_default) {
-  strip_absolute_paths_from_debug_symbols = true
-} else {
-  declare_args() {
-    strip_absolute_paths_from_debug_symbols = false
-  }
+declare_args() {
+  strip_absolute_paths_from_debug_symbols = strip_absolute_paths_from_debug_symbols_default
 }
 
 # If it wasn't manually set, then default use_debug_fission to false.

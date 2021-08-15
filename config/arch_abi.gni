@@ -1,0 +1,52 @@
+# Copyright 2021 Patrick Fu. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+if (is_android) {
+  if (current_cpu == "x86") {
+    cpu_arch_abi = "x86"
+  } else if (current_cpu == "x64") {
+    cpu_arch_abi = "x86_64"
+  } else if (current_cpu == "arm") {
+    import("//build/config/arm.gni")
+    if (arm_version < 7) {
+      cpu_arch_abi = "armeabi"
+    } else {
+      cpu_arch_abi = "armeabi-v7a"
+    }
+  } else if (current_cpu == "arm64") {
+    cpu_arch_abi = "arm64-v8a"
+  } else if (current_cpu == "mipsel") {
+    cpu_arch_abi = "mips"
+  } else if (current_cpu == "mips64el") {
+    cpu_arch_abi = "mips64"
+  } else {
+    assert(false, "Unknown Android ABI: " + current_cpu)
+  }
+
+} else if (is_apple) {
+  if (current_cpu == "x86") {
+    cpu_arch_abi = "i386"
+  } else if (current_cpu == "x64") {
+    cpu_arch_abi = "x86_64"
+  } else if (current_cpu == "arm" || current_cpu == "armv7") {
+    cpu_arch_abi = "armv7"
+  } else if (current_cpu == "arm64") {
+    cpu_arch_abi = "arm64"
+  } else {
+    assert(false, "Unknown Apple arch: " + current_cpu)
+  }
+
+} else if (is_linux) {
+  if (current_cpu == "x64") {
+    cpu_arch_abi = "x86_64"
+  } else if (current_cpu == "arm" || current_cpu == "armv7") {
+    cpu_arch_abi = "armv7"
+  } else {
+    cpu_arch_abi = current_cpu
+  }
+
+# TODO: Add those platforms whose arch/abi are inconsistent with $current_cpu
+} else {
+  cpu_arch_abi = current_cpu
+}

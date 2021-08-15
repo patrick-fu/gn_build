@@ -13,7 +13,7 @@ import("//build/config/clang/clang.gni")
 import("//build/config/compiler/compiler.gni")
 import("//build/config/coverage/coverage.gni")
 import("//build/config/dcheck_always_on.gni")
-import("//build/config/gclient_args.gni")
+# import("//build/config/gclient_args.gni")
 import("//build/config/host_byteorder.gni")
 import("//build/config/sanitizers/sanitizers.gni")
 import("//build/config/ui.gni")
@@ -21,7 +21,6 @@ import("//build/toolchain/cc_wrapper.gni")
 import("//build/toolchain/goma.gni")
 import("//build/toolchain/rbe.gni")
 import("//build/toolchain/toolchain.gni")
-import("//build_overrides/build.gni")
 
 if (current_cpu == "arm" || current_cpu == "arm64") {
   import("//build/config/arm.gni")
@@ -291,7 +290,7 @@ config("compiler") {
 
   configs += [
     # See the definitions below.
-    ":clang_revision",
+    # ":clang_revision",
     ":compiler_cpu_abi",
     ":compiler_codegen",
     ":compiler_deterministic",
@@ -392,14 +391,19 @@ config("compiler") {
     # Explicitly pass --build-id to ld. Compilers used to always pass this
     # implicitly but don't any more (in particular clang when built without
     # ENABLE_LINKER_BUILD_ID=ON).
-    if (is_official_build) {
-      # The sha1 build id has lower risk of collision but is more expensive to
-      # compute, so only use it in the official build to avoid slowing down
-      # links.
-      ldflags += [ "-Wl,--build-id=sha1" ]
-    } else if (current_os != "aix") {
-      ldflags += [ "-Wl,--build-id" ]
-    }
+    # if (is_official_build) {
+    #   # The sha1 build id has lower risk of collision but is more expensive to
+    #   # compute, so only use it in the official build to avoid slowing down
+    #   # links.
+    #   ldflags += [ "-Wl,--build-id=sha1" ]
+    # } else if (current_os != "aix") {
+    #   ldflags += [ "-Wl,--build-id" ]
+    # }
+
+    # ZEGO: Breakpoints never hit in native code when using LLD, because a lldb bug:
+    # https://github.com/android/ndk/issues/885#issuecomment-508257362
+    # So force it use sha1 even is debug
+    ldflags += [ "-Wl,--build-id=sha1" ]
 
     if (!is_android) {
       defines += [
@@ -1263,26 +1267,26 @@ config("compiler_deterministic") {
   }
 }
 
-config("clang_revision") {
-  if (is_clang && clang_base_path == default_clang_base_path) {
-    update_args = [
-      "--print-revision",
-      "--verify-version=$clang_version",
-    ]
-    if (llvm_force_head_revision) {
-      update_args += [ "--llvm-force-head-revision" ]
-    }
-    clang_revision = exec_script("//tools/clang/scripts/update.py",
-                                 update_args,
-                                 "trim string")
+# config("clang_revision") {
+#   if (is_clang && clang_base_path == default_clang_base_path) {
+#     update_args = [
+#       "--print-revision",
+#       "--verify-version=$clang_version",
+#     ]
+#     if (llvm_force_head_revision) {
+#       update_args += [ "--llvm-force-head-revision" ]
+#     }
+#     clang_revision = exec_script("//tools/clang/scripts/update.py",
+#                                  update_args,
+#                                  "trim string")
 
-    # This is here so that all files get recompiled after a clang roll and
-    # when turning clang on or off. (defines are passed via the command line,
-    # and build system rebuild things when their commandline changes). Nothing
-    # should ever read this define.
-    defines = [ "CR_CLANG_REVISION=\"$clang_revision\"" ]
-  }
-}
+#     # This is here so that all files get recompiled after a clang roll and
+#     # when turning clang on or off. (defines are passed via the command line,
+#     # and build system rebuild things when their commandline changes). Nothing
+#     # should ever read this define.
+#     defines = [ "CR_CLANG_REVISION=\"$clang_revision\"" ]
+#   }
+# }
 
 config("compiler_arm_fpu") {
   if (current_cpu == "arm" && !is_ios && !is_nacl) {
@@ -1610,7 +1614,8 @@ config("default_warnings") {
         cflags += [ "-Wno-null-pointer-subtraction" ]
       }
 
-      if (current_toolchain == host_toolchain || !use_xcode_clang) {
+      # if (current_toolchain == host_toolchain || !use_xcode_clang) {
+      if (!use_xcode_clang) { # Avoid unknown flag of macOS with Xcode's clang (patrickfu@zego.im)
         # Flags NaCl (Clang 3.7) and Xcode 9.2 (Clang clang-900.0.39.2) do not
         # recognize.
         cflags += [
@@ -1619,17 +1624,17 @@ config("default_warnings") {
           # An ABI compat warning we don't care about, https://crbug.com/1102157
           # TODO(thakis): Push this to the (few) targets that need it,
           # instead of having a global flag.
-          "-Wno-psabi",
+          # "-Wno-psabi", # Does not support by Android NDK's clang (patrickfu@zego.im)
 
           # Ignore warnings about MSVC optimization pragmas.
           # TODO(thakis): Only for no_chromium_code? http://crbug.com/912662
           "-Wno-ignored-pragma-optimize",
 
           # TODO(https://crbug.com/1016945) Clean up, enable.
-          "-Wno-builtin-assume-aligned-alignment",
+          # "-Wno-builtin-assume-aligned-alignment", # Does not support by Android NDK's clang (patrickfu@zego.im)
 
           # TODO(https://crbug.com/1028110): Evaluate and possible enable.
-          "-Wno-deprecated-copy",
+          # "-Wno-deprecated-copy", # Does not support by Android NDK's clang (patrickfu@zego.im)
 
           # TODO(https://crbug.com/1203071): Clean up and enable.
           "-Wno-unused-but-set-parameter",
@@ -1639,9 +1644,10 @@ config("default_warnings") {
           "-Wno-inline-asm",
         ]
 
-        if (enable_wmax_tokens) {
-          cflags += [ "-Wmax-tokens" ]
-        }
+        # Does not support by Android NDK's clang (patrickfu@zego.im)
+        # if (enable_wmax_tokens) {
+        #   cflags += [ "-Wmax-tokens" ]
+        # }
       }
     }
   }
@@ -1784,7 +1790,8 @@ config("no_chromium_code") {
     if (!is_nacl && (current_toolchain == host_toolchain || !use_xcode_clang)) {
       cflags += [
         # TODO(https://crbug.com/1202159): Clean up and enable.
-        "-Wno-misleading-indentation",
+        # Does not support by Android NDK's clang (patrickfu@zego.im)
+        # "-Wno-misleading-indentation",
       ]
     }
   }
@@ -1880,6 +1887,8 @@ config("exceptions") {
       defines = [ "_HAS_EXCEPTIONS=1" ]
     }
     cflags_cc = [ "/EHsc" ]
+    cflags = [ "/d2FH4-" ] # disable it , see https://devblogs.microsoft.com/cppblog/making-cpp-exception-handling-smaller-x64/
+    ldflags = [ "/d2:-FH4-" ]
   } else {
     cflags_cc = [ "-fexceptions" ]
     cflags_objcc = cflags_cc
@@ -1999,12 +2008,13 @@ if (is_win) {
   if (is_apple) {
     common_optimize_on_ldflags += [ "-Wl,-dead_strip" ]
 
-    if (is_official_build) {
-      common_optimize_on_ldflags += [
-        "-Wl,-no_data_in_code_info",
-        "-Wl,-no_function_starts",
-      ]
-    }
+    # These ldflag cannot be used with iOS bitcode (patrickfu@zego.im)
+    # if (is_official_build) {
+    #   common_optimize_on_ldflags += [
+    #     "-Wl,-no_data_in_code_info",
+    #     "-Wl,-no_function_starts",
+    #   ]
+    # }
   } else if (current_os != "aix") {
     # Non-Mac Posix flags.
     # Aix does not support these.
@@ -2311,11 +2321,22 @@ config("win_pdbaltpath") {
 # Full symbols.
 config("symbols") {
   if (is_win) {
-    if (is_clang) {
-      cflags = [ "/Z7" ]  # Debug information in the .obj files.
-    } else {
-      cflags = [ "/Zi" ]  # Produce PDB file, no edit and continue.
-    }
+    # if (is_clang) {
+    #   cflags = [ "/Z7" ]  # Debug information in the .obj files.
+    # } else {
+    #   cflags = [ "/Zi" ]  # Produce PDB file, no edit and continue.
+    # }
+
+    # We can always use /Z7 to compile static libraries
+    # 1. /Z7 will type the symbol into obj, no need to deal with the distribution of static library pdb
+    # 2. The /ZI+/Fd method will reduce the efficiency of parallel compilation (conflicting access to the same pdb file)
+    # 3. Even if /Z7 is used, when msvc compiles the dynamic library, it will still extract the symbol information into the pdb file
+    cflags = [ "/Z7" ]
+
+    # /Z7 see https://docs.microsoft.com/en-us/cpp/build/reference/z7-zi-zi-debug-information-format?view=msvc-160
+    # /Zi or /ZI may cause C1090 error during parallel compilation
+    # see https://docs.microsoft.com/en-us/cpp/error-messages/compiler-errors-1/fatal-error-c1090?view=msvc-160
+    # see https://docs.microsoft.com/en-us/cpp/build/reference/zf?view=msvc-160
 
     if (is_clang && use_lld && use_ghash) {
       cflags += [ "-gcodeview-ghash" ]

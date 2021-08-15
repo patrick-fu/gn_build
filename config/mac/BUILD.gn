@@ -18,6 +18,8 @@ config("compiler") {
     clang_arch = "x86_64"
   } else if (current_cpu == "x86") {
     clang_arch = "i386"
+  } else if (current_cpu == "arm") {
+    clang_arch = "armv7"
   } else if (current_cpu == "arm64") {
     clang_arch = current_cpu
   } else {
@@ -81,16 +83,15 @@ config("runtime_library") {
 config("mac_dynamic_flags") {
   ldflags = [ "-Wl,-ObjC" ]  # Always load Objective-C categories and classes.
 
-  if (is_component_build) {
-    ldflags += [
-      # Path for loading shared libraries for unbundled binaries.
-      "-Wl,-rpath,@loader_path/.",
+  # Always add rpath for macOS dynamic library
+  ldflags += [
+    # Path for loading shared libraries for unbundled binaries.
+    "-Wl,-rpath,@loader_path/.",
 
-      # Path for loading shared libraries for bundled binaries. Get back from
-      # Binary.app/Contents/MacOS.
-      "-Wl,-rpath,@loader_path/../../..",
-    ]
-  }
+    # Path for loading shared libraries for bundled binaries. Get back from
+    # Binary.app/Contents/MacOS.
+    "-Wl,-rpath,@loader_path/../../..",
+  ]
 }
 
 # The ldflags referenced below are handled by

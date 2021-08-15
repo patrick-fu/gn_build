@@ -190,8 +190,11 @@ template("msvc_toolchain") {
       coverage_wrapper = ""
     }
 
+    if (no_show_includes) {
+      # Do not show includes information.
+      show_includes = ""
     # Disabled with cc_wrapper because of https://github.com/mozilla/sccache/issues/1013
-    if (toolchain_args.is_clang && cc_wrapper == "") {
+    } else if (toolchain_args.is_clang && cc_wrapper == "") {
       # This flag omits system includes from /showIncludes output, to reduce the
       # amount of data to parse and store in .ninja_deps. We do this on non-Windows too,
       # and already make sure rebuilds after win sdk / libc++ / clang header updates happen via
@@ -319,9 +322,9 @@ template("msvc_toolchain") {
     tool("solink") {
       # E.g. "foo.dll":
       dllname = "{{output_dir}}/{{target_output_name}}{{output_extension}}"
-      libname = "${dllname}.lib"  # e.g. foo.dll.lib
-      pdbname = "${dllname}.pdb"
-      rspfile = "${dllname}.rsp"
+      libname = "{{output_dir}}/{{target_output_name}}.lib"  # e.g. foo.dll.lib
+      pdbname = "{{output_dir}}/{{target_output_name}}.pdb"
+      rspfile = "{{output_dir}}/{{target_output_name}}.rsp"
       pool = "//build/toolchain:link_pool($default_toolchain)"
 
       command = "$linker_wrapper$link /OUT:$dllname /nologo ${sys_lib_flags}/IMPLIB:$libname /DLL /PDB:$pdbname @$rspfile"

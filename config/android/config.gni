@@ -10,14 +10,13 @@
 if (is_android || is_chromeos) {
   import("//build/config/chromecast_build.gni")
   import("//build/config/dcheck_always_on.gni")
-  import("//build_overrides/build.gni")
   import("abi.gni")
 
   if (build_with_chromium) {
     # Some non-chromium projects (e.g. WebRTC) use our build configs
     # heavily but don't write gclient args files.
 
-    import("//build/config/gclient_args.gni")
+    # import("//build/config/gclient_args.gni")
     if (defined(checkout_android_native_support)) {
       n = "$0x0A"  # Newline
       assert(checkout_android_native_support,
@@ -79,6 +78,11 @@ if (is_android || is_chromeos) {
     }
   }
 
+  # You should set ndk path and ndk version by override `android_ndk_root`
+  # and `android_ndk_version` args when executing `gn gen`
+  #
+  # e.g. ` gn gen out/android --args='android_ndk_root="/Users/patrickfu/Library/Android/sdk/ndk/21.3.6528147" android_ndk_version="r21d"' `
+  #
   if (!defined(default_android_ndk_root)) {
     default_android_ndk_root = "//third_party/android_ndk"
     default_android_ndk_version = "r22"

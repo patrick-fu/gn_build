@@ -45,6 +45,7 @@ template("mac_info_plist") {
       extra_substitutions = invoker.extra_substitutions
     }
     extra_substitutions += [
+      "MAC_BUNDLE_ID_PREFIX=$mac_app_bundle_id_prefix",
       "MAC_SDK_BUILD=$mac_sdk_version",
       "MAC_SDK_NAME=$mac_sdk_name$mac_sdk_version",
       "MACOSX_DEPLOYMENT_TARGET=$mac_deployment_target",
@@ -98,6 +99,11 @@ template("mac_info_plist") {
 #     output_name:
 #         (optional) string, name of the generated framework without the
 #         .framework suffix. If omitted, defaults to target_name.
+#
+#     public_headers:
+#         (optional) list of paths to header file that needs to be copied
+#         into the framework bundle Headers subdirectory. If omitted or
+#         empty then the Headers subdirectory is not created.
 #
 #     extra_substitutions:
 #         (optional) string array, 'key=value' pairs for extra fields which are
@@ -228,6 +234,98 @@ template("mac_framework_bundle") {
   _framework_root_dir =
       _framework_base_dir + "/Versions/${invoker.framework_version}"
 
+  _shared_library_source = _target_name + "_shared_library_source"
+
+  _has_public_headers =
+      defined(invoker.public_headers) && invoker.public_headers != []
+
+  if (_has_public_headers) {
+    _public_headers = invoker.public_headers
+
+    _framework_headers_target = _target_name + "_framework_headers"
+
+    _target_gen_dir = get_label_info("$_target_name", "target_gen_dir")
+    _headers_map_config = _target_name + "_headers_map"
+    _header_map_filename = "$_target_gen_dir/$_output_name.headers.hmap"
+    config(_headers_map_config) {
+      visibility = [
+        ":${_shared_library_source}",
+        ":${_target_name}_shared_library_bundle_data",
+      ]
+      include_dirs = [ _header_map_filename ]
+    }
+
+    _compile_headers_map_target = _target_name + "_compile_headers_map"
+    action(_compile_headers_map_target) {
+      visibility = [ ":$_framework_headers_target" ]
+      forward_variables_from(invoker,
+                              [
+                                "deps",
+                                "public_deps",
+                                "testonly",
+                              ])
+      script = "//build/config/ios/write_framework_hmap.py"
+      outputs = [ _header_map_filename ]
+
+      # The header map generation only wants the list of headers, not all of
+      # sources, so filter any non-header source files from "sources". It is
+      # less error prone that having the developer duplicate the list of all
+      # headers in addition to "sources".
+      sources = []
+      foreach(_source, invoker.sources) {
+        if (get_path_info(_source, "extension") == "h") {
+          sources += [ _source ]
+        }
+      }
+
+      args = [
+                rebase_path(_header_map_filename),
+                rebase_path(_framework_base_dir, root_build_dir),
+              ] + rebase_path(sources, root_build_dir)
+    }
+
+    _create_module_map_target = _target_name + "_module_map"
+    action(_create_module_map_target) {
+      visibility = [ ":$_framework_headers_target" ]
+      script = "//build/config/ios/write_framework_modulemap.py"
+      outputs = [ "$_framework_root_dir/Modules/module.modulemap" ]
+      args = [
+        _output_name,
+        rebase_path("$_framework_root_dir/Modules", root_build_dir),
+      ]
+    }
+
+    _copy_public_headers_target = _target_name + "_copy_public_headers"
+    copy(_copy_public_headers_target) {
+      forward_variables_from(invoker,
+                              [
+                                "testonly",
+                                "deps",
+                              ])
+      visibility = [ ":$_framework_headers_target" ]
+      sources = _public_headers
+      outputs = [ "$_framework_root_dir/Headers/{{source_file_part}}" ]
+
+      # Do not use forward_variables_from for "public_deps" as
+      # we do not want to forward those dependencies.
+      if (defined(invoker.public_deps)) {
+        if (!defined(deps)) {
+          deps = []
+        }
+        deps += invoker.public_deps
+      }
+    }
+
+    group(_framework_headers_target) {
+      forward_variables_from(invoker, [ "testonly" ])
+      deps = [
+        ":$_compile_headers_map_target",
+        ":$_create_module_map_target",
+      ]
+      public_deps = [ ":$_copy_public_headers_target" ]
+    }
+  }
+
   # Clean the entire framework if the framework_version changes.
   _version_file = "$target_out_dir/${target_name}_version"
   exec_script("//build/config/mac/prepare_framework_version.py",
@@ -270,6 +368,34 @@ template("mac_framework_bundle") {
   _link_shared_library_target = target_name + "_shared_library"
   _shared_library_bundle_data = target_name + "_shared_library_bundle_data"
 
+  source_set(_shared_library_source) {
+    forward_variables_from(invoker,
+                           "*",
+                           [
+                             "bundle_deps",
+                             "bundle_deps_filter",
+                             "data_deps",
+                             "enable_code_signing",
+                             "extra_substitutions",
+                             "info_plist",
+                             "info_plist_target",
+                             "output_name",
+                             "public_configs",
+                             "visibility",
+                           ])
+
+    visibility = [ ":$_link_shared_library_target" ]
+
+    if (_has_public_headers) {
+      configs += [ ":$_headers_map_config" ]
+
+      if (!defined(deps)) {
+        deps = []
+      }
+      deps += [ ":$_framework_headers_target" ]
+    }
+  }
+
   shared_library(_link_shared_library_target) {
     forward_variables_from(invoker,
                            "*",
@@ -287,6 +413,21 @@ template("mac_framework_bundle") {
       ":$_shared_library_bundle_data",
       ":${_framework_target}+link_nested",
     ]
+
+    if (!defined(deps)) {
+      deps = []
+    }
+    deps += [ ":$_shared_library_source" ]
+    if (_has_public_headers) {
+      deps += [ ":$_framework_headers_target" ]
+    }
+
+    if (!defined(ldflags)) {
+      ldflags = []
+    }
+    ldflags +=
+        [ "-Wl,-install_name,@executable_path/../Frameworks/$_output_name.framework/Versions/${invoker.framework_version}/$_output_name" ]
+
     output_name = _output_name
     output_prefix_override = true
     output_extension = ""

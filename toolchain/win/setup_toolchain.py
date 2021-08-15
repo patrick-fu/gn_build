@@ -98,7 +98,7 @@ def _LoadToolchainEnv(cpu, toolchain_root, sdk_dir, target_store):
   # the setup script from the SDK if so. |cpu| should be either
   # 'x86' or 'x64' or 'arm' or 'arm64'.
   assert cpu in ('x86', 'x64', 'arm', 'arm64')
-  if bool(int(os.environ.get('DEPOT_TOOLS_WIN_TOOLCHAIN', 1))) and sdk_dir:
+  if bool(int(os.environ.get('DEPOT_TOOLS_WIN_TOOLCHAIN', 0))) and sdk_dir:
     # Load environment from json file.
     env = os.path.normpath(os.path.join(sdk_dir, 'bin/SetEnv.%s.json' % cpu))
     env = json.load(open(env))['env']
