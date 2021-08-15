@@ -1,10 +1,12 @@
 # This file is needed for projects that has this directory as a separate Git
 # mirror in DEPS. Without it, a lot is wiped and re-downloaded for each sync.
+.DS_Store
 *.pyc
 ciopfs
 /android/bin
 /android/binary_size/apks/**/*.apk
 /args/chromeos/*.gni
+/args/chromeos/rewrapper*
 /config/gclient_args.gni
 /cros_cache/
 /Debug
@@ -17,7 +19,7 @@ ciopfs
 /Release
 /Release_x64
 /win_toolchain.json
-/util/LASTCHANGE
+/util/LASTCHANGE*
 /util/support
 /x64/
 /linux/debian_*-sysroot/

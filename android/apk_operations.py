@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env vpython3
 # Copyright 2017 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -125,36 +125,9 @@ def _GenerateBundleApks(info,
       optimize_for=optimize_for)
 
 
-def _InstallBundle(devices, apk_helper_instance, package_name,
-                   command_line_flags_file, modules, fake_modules):
-  # Path Chrome creates after validating fake modules. This needs to be cleared
-  # for pushed fake modules to be picked up.
-  SPLITCOMPAT_PATH = '/data/data/' + package_name + '/files/splitcompat'
-  # Chrome command line flag needed for fake modules to work.
-  FAKE_FEATURE_MODULE_INSTALL = '--fake-feature-module-install'
-
-  def ShouldWarnFakeFeatureModuleInstallFlag(device):
-    if command_line_flags_file:
-      changer = flag_changer.FlagChanger(device, command_line_flags_file)
-      return FAKE_FEATURE_MODULE_INSTALL not in changer.GetCurrentFlags()
-    return False
-
-  def ClearFakeModules(device):
-    if device.PathExists(SPLITCOMPAT_PATH, as_root=True):
-      device.RemovePath(
-          SPLITCOMPAT_PATH, force=True, recursive=True, as_root=True)
-      logging.info('Removed %s', SPLITCOMPAT_PATH)
-    else:
-      logging.info('Skipped removing nonexistent %s', SPLITCOMPAT_PATH)
+def _InstallBundle(devices, apk_helper_instance, modules, fake_modules):
 
   def Install(device):
-    ClearFakeModules(device)
-    if fake_modules and ShouldWarnFakeFeatureModuleInstallFlag(device):
-      # Print warning if command line is not set up for fake modules.
-      msg = ('Command line has no %s: Fake modules will be ignored.' %
-             FAKE_FEATURE_MODULE_INSTALL)
-      print(_Colorize(msg, colorama.Fore.YELLOW + colorama.Style.BRIGHT))
-
     device.Install(
         apk_helper_instance,
         permissions=[],
@@ -535,8 +508,8 @@ def _RunDiskUsage(devices, package_name):
             compilation_filter)
 
   def print_sizes(desc, sizes):
-    print('%s: %d KiB' % (desc, sum(sizes.itervalues())))
-    for path, size in sorted(sizes.iteritems()):
+    print('%s: %d KiB' % (desc, sum(sizes.values())))
+    for path, size in sorted(sizes.items()):
       print('    %s: %s KiB' % (path, size))
 
   parallel_devices = device_utils.DeviceUtils.parallel(devices)
@@ -548,7 +521,7 @@ def _RunDiskUsage(devices, package_name):
 
     (data_dir_sizes, code_cache_sizes, apk_sizes, lib_sizes, odex_sizes,
      compilation_filter) = result
-    total = sum(sum(sizes.itervalues()) for sizes in result[:-1])
+    total = sum(sum(sizes.values()) for sizes in result[:-1])
 
     print_sizes('Apk', apk_sizes)
     print_sizes('App Data (non-code cache)', data_dir_sizes)
@@ -620,7 +593,7 @@ class _LogcatProcessor(object):
 
   # Logcat tags for messages that are generally relevant but are not from PIDs
   # associated with the apk.
-  _WHITELISTED_TAGS = {
+  _ALLOWLISTED_TAGS = {
       'ActivityManager',  # Shows activity lifecycle messages.
       'ActivityTaskManager',  # More activity lifecycle messages.
       'AndroidRuntime',  # Java crash dumps
@@ -675,6 +648,15 @@ class _LogcatProcessor(object):
     # _start_pattern. There can be multiple "Start proc" messages from prior
     # runs of the app.
     self._found_initial_pid = self._primary_pid != None
+    # Retrieve any additional patterns that are relevant for the User.
+    self._user_defined_highlight = None
+    user_regex = os.environ.get('CHROMIUM_LOGCAT_HIGHLIGHT')
+    if user_regex:
+      self._user_defined_highlight = re.compile(user_regex)
+      if not self._user_defined_highlight:
+        print(_Colorize(
+            'Rejecting invalid regular expression: {}'.format(user_regex),
+            colorama.Fore.RED + colorama.Style.BRIGHT))
 
   def _UpdateMyPids(self):
     # We intentionally do not clear self._my_pids to make sure that the
@@ -719,10 +701,19 @@ class _LogcatProcessor(object):
     def consume_token_or_default(default):
       return tokens.pop(0) if len(tokens) > 0 else default
 
+    def consume_integer_token_or_default(default):
+      if len(tokens) == 0:
+        return default
+
+      try:
+        return int(tokens.pop(0))
+      except ValueError:
+        return default
+
     date = consume_token_or_default('')
     invokation_time = consume_token_or_default('')
-    pid = int(consume_token_or_default(-1))
-    tid = int(consume_token_or_default(-1))
+    pid = consume_integer_token_or_default(-1)
+    tid = consume_integer_token_or_default(-1)
     priority = consume_token_or_default('')
     tag = consume_token_or_default('')
     original_message = consume_token_or_default('')
@@ -741,10 +732,16 @@ class _LogcatProcessor(object):
 
   def _PrintParsedLine(self, parsed_line, dim=False):
     tid_style = colorama.Style.NORMAL
+    user_match = self._user_defined_highlight and (
+        re.search(self._user_defined_highlight, parsed_line.tag)
+        or re.search(self._user_defined_highlight, parsed_line.message))
+
     # Make the main thread bright.
     if not dim and parsed_line.pid == parsed_line.tid:
       tid_style = colorama.Style.BRIGHT
     pid_style = self._GetPidStyle(parsed_line.pid, dim)
+    msg_style = pid_style if not user_match else (colorama.Fore.GREEN +
+                                                  colorama.Style.BRIGHT)
     # We have to pad before adding color as that changes the width of the tag.
     pid_str = _Colorize('{:5}'.format(parsed_line.pid), pid_style)
     tid_str = _Colorize('{:5}'.format(parsed_line.tid), tid_style)
@@ -756,7 +753,7 @@ class _LogcatProcessor(object):
     if self._deobfuscator:
       messages = self._deobfuscator.TransformLines(messages)
     for message in messages:
-      message = _Colorize(message, pid_style)
+      message = _Colorize(message, msg_style)
       sys.stdout.write('{} {} {} {} {} {}: {}\n'.format(
           parsed_line.date, parsed_line.invokation_time, pid_str, tid_str,
           priority, tag, message))
@@ -811,7 +808,7 @@ class _LogcatProcessor(object):
         return
 
     if owned_pid or self._verbose or (log.priority == 'F' or  # Java crash dump
-                                      log.tag in self._WHITELISTED_TAGS):
+                                      log.tag in self._ALLOWLISTED_TAGS):
       if nonce_found:
         self._native_stack_symbolizer.AddLine(log, not owned_pid)
       else:
@@ -1317,8 +1314,7 @@ class _InstallCommand(_Command):
       modules = list(
           set(self.args.module) - set(self.args.no_module) -
           set(self.args.fake))
-      _InstallBundle(self.devices, self.apk_helper, self.args.package_name,
-                     self.args.command_line_flags_file, modules, self.args.fake)
+      _InstallBundle(self.devices, self.apk_helper, modules, self.args.fake)
     else:
       _InstallApk(self.devices, self.apk_helper, self.install_dict)
 

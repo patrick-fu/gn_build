@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Copyright (c) 2013 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
@@ -21,8 +21,9 @@ from xml.etree import ElementTree
 
 from util import build_utils
 from util import manifest_utils
+from util import server_utils
 
-_LINT_MD_URL = 'https://chromium.googlesource.com/chromium/src/+/master/build/android/docs/lint.md'  # pylint: disable=line-too-long
+_LINT_MD_URL = 'https://chromium.googlesource.com/chromium/src/+/main/build/android/docs/lint.md'  # pylint: disable=line-too-long
 
 # These checks are not useful for chromium.
 _DISABLED_ALWAYS = [
@@ -187,7 +188,7 @@ def _WriteXmlFile(root, path):
     # makes it a lot easier to read as a human (also on code search).
     f.write(
         minidom.parseString(ElementTree.tostring(
-            root, encoding='utf-8')).toprettyxml(indent='  '))
+            root, encoding='utf-8')).toprettyxml(indent='  ').encode('utf-8'))
 
 
 def _RunLint(lint_binary_path,
@@ -217,6 +218,7 @@ def _RunLint(lint_binary_path,
       '--disable',
       ','.join(_DISABLED_ALWAYS),
   ]
+
   if baseline:
     cmd.extend(['--baseline', baseline])
   if testonly_target:
@@ -261,6 +263,10 @@ def _RunLint(lint_binary_path,
   custom_annotation_zips = []
   if aars:
     for aar in aars:
+      # androidx custom lint checks require a newer version of lint. Disable
+      # until we update see https://crbug.com/1225326
+      if 'androidx' in aar:
+        continue
       # Use relative source for aar files since they are not generated.
       aar_dir = os.path.join(aar_root_dir,
                              os.path.splitext(_SrcRelative(aar))[0])
@@ -356,6 +362,10 @@ def _RunLint(lint_binary_path,
 def _ParseArgs(argv):
   parser = argparse.ArgumentParser()
   build_utils.AddDepfileOption(parser)
+  parser.add_argument('--target-name', help='Fully qualified GN target name.')
+  parser.add_argument('--skip-build-server',
+                      action='store_true',
+                      help='Avoid using the build server.')
   parser.add_argument('--lint-binary-path',
                       required=True,
                       help='Path to lint executable.')
@@ -384,6 +394,9 @@ def _ParseArgs(argv):
                       help='If set, some checks like UnusedResources will be '
                       'disabled since they are not helpful for test '
                       'targets.')
+  parser.add_argument('--create-cache',
+                      action='store_true',
+                      help='Whether this invocation is just warming the cache.')
   parser.add_argument('--warnings-as-errors',
                       action='store_true',
                       help='Treat all warnings as errors.')
@@ -427,6 +440,15 @@ def _ParseArgs(argv):
 def main():
   build_utils.InitLogging('LINT_DEBUG')
   args = _ParseArgs(sys.argv[1:])
+
+  # TODO(wnwen): Consider removing lint cache now that there are only two lint
+  #              invocations.
+  # Avoid parallelizing cache creation since lint runs without the cache defeat
+  # the purpose of creating the cache in the first place.
+  if (not args.create_cache and not args.skip_build_server
+      and server_utils.MaybeRunCommand(
+          name=args.target_name, argv=sys.argv, stamp_file=args.stamp)):
+    return
 
   sources = []
   for java_sources_file in args.java_sources:
