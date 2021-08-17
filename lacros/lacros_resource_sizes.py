@@ -90,15 +90,16 @@ class _Group:
 
 
 # List of disjoint build artifact groups for size tracking. This list should be
-# synched with chromeos-amd64-generic-lacros-rel builder contents (specified in
-# //infra/config/subprojects/chromium/ci.star) and
+# synched with lacros-amd64-generic-binary-size-rel builder contents (specified
+# in # //infra/config/subprojects/chromium/ci.star) and
 # chromeos-amd64-generic-lacros-internal builder (specified in src-internal).
 _TRACKED_GROUPS = [
     _Group(paths=['chrome'],
            title='File: chrome',
            track_stripped=True,
            track_compressed=True),
-    _Group(paths=['crashpad_handler'], title='File: crashpad_handler'),
+    _Group(paths=['chrome_crashpad_handler'],
+           title='File: chrome_crashpad_handler'),
     _Group(paths=['icudtl.dat'], title='File: icudtl.dat'),
     _Group(paths=['nacl_helper'], title='File: nacl_helper'),
     _Group(paths=['nacl_irt_x86_64.nexe'], title='File: nacl_irt_x86_64.nexe'),
