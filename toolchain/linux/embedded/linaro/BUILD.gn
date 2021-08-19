@@ -22,8 +22,9 @@ gcc_toolchain("v4.9.4") {
 
   ar = "${toolprefix}ar"
   ld = cxx
-  readelf = "${toolprefix}readelf"
   nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
 
   toolchain_args = {
     current_cpu = "arm"
@@ -47,8 +48,9 @@ gcc_toolchain("v4.9.4-armhf") {
 
   ar = "${toolprefix}ar"
   ld = cxx
-  readelf = "${toolprefix}readelf"
   nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
 
   toolchain_args = {
     current_cpu = "arm"
@@ -72,8 +74,9 @@ gcc_toolchain("v5.5.0") {
 
   ar = "${toolprefix}ar"
   ld = cxx
-  readelf = "${toolprefix}readelf"
   nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
 
   toolchain_args = {
     current_cpu = "arm"
@@ -97,8 +100,9 @@ gcc_toolchain("v5.5.0-armhf") {
 
   ar = "${toolprefix}ar"
   ld = cxx
-  readelf = "${toolprefix}readelf"
   nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
 
   toolchain_args = {
     current_cpu = "arm"
@@ -122,8 +126,9 @@ gcc_toolchain("v5.5.0-aarch64") {
 
   ar = "${toolprefix}ar"
   ld = cxx
-  readelf = "${toolprefix}readelf"
   nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
 
   toolchain_args = {
     current_cpu = "arm64"
@@ -147,8 +152,9 @@ gcc_toolchain("v7.3.1") {
 
   ar = "${toolprefix}ar"
   ld = cxx
-  readelf = "${toolprefix}readelf"
   nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
 
   toolchain_args = {
     current_cpu = "arm"
@@ -172,8 +178,9 @@ gcc_toolchain("v7.3.1-armhf") {
 
   ar = "${toolprefix}ar"
   ld = cxx
-  readelf = "${toolprefix}readelf"
   nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
 
   toolchain_args = {
     current_cpu = "arm"
