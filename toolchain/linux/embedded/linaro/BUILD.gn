@@ -164,10 +164,10 @@ gcc_toolchain("v7.3.1") {
 
 # linaro-v7-3-1-armhf
 gcc_toolchain("v7.3.1-armhf") {
-  binprefix = "${linaro_home}//v7.3.1/arm-linux-gnueabihf/bin"
+  binprefix = "${linaro_home}/v7.3.1/arm-linux-gnueabihf/bin"
   toolprefix = "${binprefix}/arm-linux-gnueabihf-"
 
-  sysroot = "--sysroot=${linaro_home}//v7.3.1/arm-linux-gnueabihf/arm-linux-gnueabihf/libc"
+  sysroot = "--sysroot=${linaro_home}/v7.3.1/arm-linux-gnueabihf/arm-linux-gnueabihf/libc"
   flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6"
 
   extra_cflags = "${sysroot} ${flags}"
