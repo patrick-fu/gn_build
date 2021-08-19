@@ -10,7 +10,7 @@ linaro_home = getenv("LINARO_HOME")
 # linaro-v4-9-4-arm
 gcc_toolchain("v4.9.4") {
   binprefix = "${linaro_home}/v4.9.4/arm-linux-gnueabi/bin"
-  toolprefix = "${binprefix}/arm-linux-gnueabi"
+  toolprefix = "${binprefix}/arm-linux-gnueabi-"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
