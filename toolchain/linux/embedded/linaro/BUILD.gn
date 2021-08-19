@@ -2,7 +2,6 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-# import("//build/config/sysroot.gni")
 import("//build/toolchain/gcc_toolchain.gni")
 
 linaro_home = getenv("LINARO_HOME")
@@ -11,6 +10,12 @@ linaro_home = getenv("LINARO_HOME")
 gcc_toolchain("v4.9.4") {
   binprefix = "${linaro_home}/v4.9.4/arm-linux-gnueabi/bin"
   toolprefix = "${binprefix}/arm-linux-gnueabi-"
+
+  sysroot = "--sysroot=${linaro_home}/v4.9.4/arm-linux-gnueabi/arm-linux-gnueabi/libc"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -23,7 +28,155 @@ gcc_toolchain("v4.9.4") {
   toolchain_args = {
     current_cpu = "arm"
     current_os = "linux"
-    is_clang = false
-    sysroot = "${linaro_home}/v4.9.4/arm-linux-gnueabi/arm-linux-gnueabi/libc"
+  }
+}
+
+# linaro-v4-9-4-armhf
+gcc_toolchain("v4.9.4-armhf") {
+  binprefix = "${linaro_home}/v4.9.4/arm-linux-gnueabihf/bin"
+  toolprefix = "${binprefix}/arm-linux-gnueabihf-"
+
+  sysroot = "--sysroot=${linaro_home}/v4.9.4/arm-linux-gnueabihf/arm-linux-gnueabihf/libc"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  readelf = "${toolprefix}readelf"
+  nm = "${toolprefix}nm"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
+
+# linaro-v5-5-0-arm
+gcc_toolchain("v5.5.0") {
+  binprefix = "${linaro_home}/v5.5.0/arm-linux-gnueabi/bin"
+  toolprefix = "${binprefix}/arm-linux-gnueabi-"
+
+  sysroot = "--sysroot=${linaro_home}/v5.5.0/arm-linux-gnueabi/arm-linux-gnueabi/libc"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  readelf = "${toolprefix}readelf"
+  nm = "${toolprefix}nm"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
+
+# linaro-v5-5-0-armhf
+gcc_toolchain("v5.5.0-armhf") {
+  binprefix = "${linaro_home}/v5.5.0/arm-linux-gnueabihf/bin"
+  toolprefix = "${binprefix}/arm-linux-gnueabihf-"
+
+  sysroot = "--sysroot=${linaro_home}/v5.5.0/arm-linux-gnueabihf/arm-linux-gnueabihf/libc"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  readelf = "${toolprefix}readelf"
+  nm = "${toolprefix}nm"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
+
+# linaro-v5-5-0-aarch64-linux-gnu
+gcc_toolchain("v5.5.0-aarch64") {
+  binprefix = "${linaro_home}/v5.5.0/aarch64-linux-gnu/bin"
+  toolprefix = "${binprefix}/aarch64-linux-gnu-"
+
+  sysroot = "--sysroot=${linaro_home}/v5.5.0/aarch64-linux-gnu/aarch64-linux-gnu/libc"
+  flags = "-march=armv8-a -mtune=cortex-a53 -mabi=lp64 -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  readelf = "${toolprefix}readelf"
+  nm = "${toolprefix}nm"
+
+  toolchain_args = {
+    current_cpu = "arm64"
+    current_os = "linux"
+  }
+}
+
+# linaro-v7-3-1-arm
+gcc_toolchain("v7.3.1") {
+  binprefix = "${linaro_home}/v7.3.1/arm-linux-gnueabi/bin"
+  toolprefix = "${binprefix}/arm-linux-gnueabi-"
+
+  sysroot = "--sysroot=${linaro_home}/v7.3.1/arm-linux-gnueabi/arm-linux-gnueabi/libc"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  readelf = "${toolprefix}readelf"
+  nm = "${toolprefix}nm"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
+
+# linaro-v7-3-1-armhf
+gcc_toolchain("v7.3.1-armhf") {
+  binprefix = "${linaro_home}//v7.3.1/arm-linux-gnueabihf/bin"
+  toolprefix = "${binprefix}/arm-linux-gnueabihf-"
+
+  sysroot = "--sysroot=${linaro_home}//v7.3.1/arm-linux-gnueabihf/arm-linux-gnueabihf/libc"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  readelf = "${toolprefix}readelf"
+  nm = "${toolprefix}nm"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
   }
 }
