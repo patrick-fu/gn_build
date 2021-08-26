@@ -16,6 +16,7 @@ gcc_toolchain("sgks6802") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
+  extra_ldflags = ""
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"

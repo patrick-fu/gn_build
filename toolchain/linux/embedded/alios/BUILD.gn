@@ -16,6 +16,7 @@ gcc_toolchain("alios4_arm64") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
+  extra_ldflags = ""
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -44,6 +45,7 @@ gcc_toolchain("alios4_armhf") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
+  extra_ldflags = ""
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -70,6 +72,7 @@ gcc_toolchain("alios4_x86_64") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
+  extra_ldflags = ""
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
