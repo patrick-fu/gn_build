@@ -1,0 +1,189 @@
+# Copyright 2021 PatrickFu @ ZEGO. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/toolchain/gcc_toolchain.gni")
+
+hisi_home = getenv("HISI_HOME")
+
+# hisi-himix100
+gcc_toolchain("hi3559v200") {
+  binprefix = "${hisi_home}/arm-himix100-linux/bin"
+  toolprefix = "${binprefix}/arm-himix100-linux-"
+
+  sysroot = "--sysroot=${hisi_home}/arm-himix100-linux/target"
+  flags = "-mcpu=cortex-a7 -mfloat-abi=softfp -mfpu=neon-vfpv4 -fno-aggressive-loop-optimizations -ffunction-sections -fdata-sections -fstack-protector -Wno-error=implicit-function-declaration -Wno-date-time -DHI_XXXX -DHI_RELEASE -Dhi3519av100 -DVER_X=1 -DVER_Y=0 -DVER_Z=0 -DVER_P=0 -DVER_B=10 -DUSER_BIT_32 -DKERNEL_BIT_32  -DSENSOR0_TYPE=SONY_IMX334_MIPI_8M_30FPS_12BIT -DSENSOR1_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT  -DSENSOR2_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT -DSENSOR3_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT -DSENSOR4_TYPE=SONY_IMX334_MIPI_8M_30FPS_12BIT -DHI_ACODEC_TYPE_INNER -DHI_ACODEC_TYPE_HDMI -DISP_V2 -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
+
+# hisi-himix200
+gcc_toolchain("hi3516d") {
+  binprefix = "${hisi_home}/arm-himix200-linux/bin"
+  toolprefix = "${binprefix}/arm-himix200-linux-"
+
+  sysroot = "--sysroot=${hisi_home}/arm-himix200-linux/target"
+  flags = "-mcpu=cortex-a9 -mfloat-abi=softfp -mfpu=neon-vfpv4 -fno-aggressive-loop-optimizations -ffunction-sections -fdata-sections -fstack-protector -Wno-error=implicit-function-declaration -Wno-date-time -DHI_XXXX -DHI_RELEASE -Dhi3519av100 -DVER_X=1 -DVER_Y=0 -DVER_Z=0 -DVER_P=0 -DVER_B=10 -DUSER_BIT_32 -DKERNEL_BIT_32  -DSENSOR0_TYPE=SONY_IMX334_MIPI_8M_30FPS_12BIT -DSENSOR1_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT  -DSENSOR2_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT -DSENSOR3_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT -DSENSOR4_TYPE=SONY_IMX334_MIPI_8M_30FPS_12BIT -DHI_ACODEC_TYPE_INNER -DHI_ACODEC_TYPE_HDMI -DISP_V2 -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
+
+# hisi-v300
+gcc_toolchain("hi3531a_c01") {
+  binprefix = "${hisi_home}/arm-hisiv300-linux/target/bin"
+  toolprefix = "${binprefix}/arm-hisiv300-linux-"
+
+  sysroot = "--sysroot=${hisi_home}/arm-hisiv300-linux/target"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
+
+# hisi-v300
+gcc_toolchain("hi3536") {
+  binprefix = "${hisi_home}/arm-hisiv300-linux/target/bin"
+  toolprefix = "${binprefix}/arm-hisiv300-linux-"
+
+  sysroot = "--sysroot=${hisi_home}/arm-hisiv300-linux/target"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
+
+# hisi-v500
+gcc_toolchain("hi3531d_c01") {
+  binprefix = "${hisi_home}/arm-hisiv500-linux/target/bin"
+  toolprefix = "${binprefix}/arm-hisiv500-linux-"
+
+  sysroot = "--sysroot=${hisi_home}/arm-hisiv500-linux/target"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
+
+# hisi-v600
+gcc_toolchain("hi3531d_c02") {
+  binprefix = "${hisi_home}/arm-hisiv600-linux/target/bin"
+  toolprefix = "${binprefix}/arm-hisiv600-linux-"
+
+  sysroot = "--sysroot=${hisi_home}/arm-hisiv600-linux/target"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
+
+# hisi-v610
+gcc_toolchain("hi3561a") {
+  binprefix = "${hisi_home}/arm-hisiv610-linux/target/bin"
+  toolprefix = "${binprefix}/arm-hisiv610-linux-"
+
+  sysroot = "--sysroot=${hisi_home}/arm-hisiv610-linux/target"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon-vfpv4 -mthumb"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
