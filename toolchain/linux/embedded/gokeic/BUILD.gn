@@ -1,0 +1,33 @@
+# Copyright 2021 PatrickFu @ ZEGO. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/toolchain/gcc_toolchain.gni")
+
+gokeic_home = getenv("GOKEIC_HOME")
+
+# gokeic-sgks6802
+gcc_toolchain("sgks6802") {
+  binprefix = "${gokeic_home}/sgks6802/arm-linux-gcc-4.8.5/bin"
+  toolprefix = "${binprefix}/arm-buildroot-linux-gnueabi-"
+
+  sysroot = "--sysroot=${gokeic_home}/sgks6802/arm-linux-gcc-4.8.5/arm-buildroot-linux-gnueabi/sysroot"
+  flags = "-march=armv7-a -mtune=cortex-a7 -mfloat-abi=softfp -mfpu=neon-vfpv4 -mthumb -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
