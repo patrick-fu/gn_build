@@ -8,7 +8,7 @@ allwinner_home = getenv("ALLWINNER_HOME")
 
 # allwinner-r16
 gcc_toolchain("r16") {
-  binprefix = "${allwinner_home}/r16/bin"
+  binprefix = "ls && ${allwinner_home}/r16/bin"
   toolprefix = "${binprefix}/arm-openwrt-linux-muslgnueabi-"
 
   sysroot = "--sysroot=${allwinner_home}/r16"
