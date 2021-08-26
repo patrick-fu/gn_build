@@ -1,0 +1,59 @@
+# Copyright 2021 PatrickFu @ ZEGO. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/toolchain/gcc_toolchain.gni")
+
+allwinner_home = getenv("ALLWINNER_HOME")
+
+# allwinner-r16
+gcc_toolchain("r16") {
+  binprefix = "${allwinner_home}/r16/bin"
+  toolprefix = "${binprefix}/arm-openwrt-linux-muslgnueabi-"
+
+  sysroot = "--sysroot=${allwinner_home}/r16"
+  flags = "-march=armv7-a -mtune=cortex-a15 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
+
+# allwinner-r328
+gcc_toolchain("r328") {
+  binprefix = "${allwinner_home}/r328/bin"
+  toolprefix = "${binprefix}/arm-openwrt-linux-"
+
+  sysroot = "--sysroot=${allwinner_home}/r328"
+  flags = "-march=armv7-a -mtune=cortex-a7 -mfloat-abi=hard -mfpu=vfpv4 -mthumb -DNOT_SUPPORT_AF_INET6"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
