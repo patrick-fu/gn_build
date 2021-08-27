@@ -5,6 +5,7 @@
 import("//build/toolchain/gcc_toolchain.gni")
 
 hisi_home = getenv("HISI_HOME")
+sysenv_path = getenv("PATH")
 
 # hisi-himix100
 gcc_toolchain("hi3559v200") {
@@ -12,7 +13,8 @@ gcc_toolchain("hi3559v200") {
   toolprefix = "${binprefix}/arm-himix100-linux-"
 
   sysroot = "--sysroot=${hisi_home}/arm-himix100-linux/target"
-  flags = "-mcpu=cortex-a7 -mfloat-abi=softfp -mfpu=neon-vfpv4 -fno-aggressive-loop-optimizations -ffunction-sections -fdata-sections -fstack-protector -Wno-error=implicit-function-declaration -Wno-date-time -DHI_XXXX -DHI_RELEASE -Dhi3519av100 -DVER_X=1 -DVER_Y=0 -DVER_Z=0 -DVER_P=0 -DVER_B=10 -DUSER_BIT_32 -DKERNEL_BIT_32  -DSENSOR0_TYPE=SONY_IMX334_MIPI_8M_30FPS_12BIT -DSENSOR1_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT  -DSENSOR2_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT -DSENSOR3_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT -DSENSOR4_TYPE=SONY_IMX334_MIPI_8M_30FPS_12BIT -DHI_ACODEC_TYPE_INNER -DHI_ACODEC_TYPE_HDMI -DISP_V2 -DNOT_SUPPORT_AF_INET6"
+  flags = "-mcpu=cortex-a7 -mfloat-abi=softfp -mfpu=neon-vfpv4 -fno-aggressive-loop-optimizations -ffunction-sections -fdata-sections -fstack-protector -Wno-error=implicit-function-declaration -Wno-date-time -DHI_XXXX -DHI_RELEASE -Dhi3519av100 -DVER_X=1 -DVER_Y=0 -DVER_Z=0 -DVER_P=0 -DVER_B=10 -DUSER_BIT_32 -DKERNEL_BIT_32  -DSENSOR0_TYPE=SONY_IMX334_MIPI_8M_30FPS_12BIT -DSENSOR1_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT  -DSENSOR2_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT -DSENSOR3_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT -DSENSOR4_TYPE=SONY_IMX334_MIPI_8M_30FPS_12BIT -DHI_ACODEC_TYPE_INNER -DHI_ACODEC_TYPE_HDMI -DISP_V2 -DNOT_SUPPORT_AF_INET6 -DLINUX_HISI"
+  extra_envcmd = "export LC_ALL=C && export PATH=${sysenv_path}:${hisi_home}/{binprefix} && "
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -39,7 +41,8 @@ gcc_toolchain("hi3516d") {
   toolprefix = "${binprefix}/arm-himix200-linux-"
 
   sysroot = "--sysroot=${hisi_home}/arm-himix200-linux/target"
-  flags = "-mcpu=cortex-a9 -mfloat-abi=softfp -mfpu=neon-vfpv4 -fno-aggressive-loop-optimizations -ffunction-sections -fdata-sections -fstack-protector -Wno-error=implicit-function-declaration -Wno-date-time -DHI_XXXX -DHI_RELEASE -Dhi3519av100 -DVER_X=1 -DVER_Y=0 -DVER_Z=0 -DVER_P=0 -DVER_B=10 -DUSER_BIT_32 -DKERNEL_BIT_32  -DSENSOR0_TYPE=SONY_IMX334_MIPI_8M_30FPS_12BIT -DSENSOR1_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT  -DSENSOR2_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT -DSENSOR3_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT -DSENSOR4_TYPE=SONY_IMX334_MIPI_8M_30FPS_12BIT -DHI_ACODEC_TYPE_INNER -DHI_ACODEC_TYPE_HDMI -DISP_V2 -DNOT_SUPPORT_AF_INET6"
+  flags = "-mcpu=cortex-a9 -mfloat-abi=softfp -mfpu=neon-vfpv4 -fno-aggressive-loop-optimizations -ffunction-sections -fdata-sections -fstack-protector -Wno-error=implicit-function-declaration -Wno-date-time -DHI_XXXX -DHI_RELEASE -Dhi3519av100 -DVER_X=1 -DVER_Y=0 -DVER_Z=0 -DVER_P=0 -DVER_B=10 -DUSER_BIT_32 -DKERNEL_BIT_32  -DSENSOR0_TYPE=SONY_IMX334_MIPI_8M_30FPS_12BIT -DSENSOR1_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT  -DSENSOR2_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT -DSENSOR3_TYPE=SONY_IMX290_SLAVE_MIPI_2M_60FPS_10BIT -DSENSOR4_TYPE=SONY_IMX334_MIPI_8M_30FPS_12BIT -DHI_ACODEC_TYPE_INNER -DHI_ACODEC_TYPE_HDMI -DISP_V2 -DNOT_SUPPORT_AF_INET6 -DLINUX_HISI"
+  extra_envcmd = "export LC_ALL=C && export PATH=${sysenv_path}:${hisi_home}/{binprefix} && "
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -66,7 +69,8 @@ gcc_toolchain("hi3531a_c01") {
   toolprefix = "${binprefix}/arm-hisiv300-linux-"
 
   sysroot = "--sysroot=${hisi_home}/arm-hisiv300-linux/target"
-  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_HISI"
+  extra_envcmd = "export PATH=${sysenv_path}:${hisi_home}/{binprefix} && "
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -93,7 +97,8 @@ gcc_toolchain("hi3536") {
   toolprefix = "${binprefix}/arm-hisiv300-linux-"
 
   sysroot = "--sysroot=${hisi_home}/arm-hisiv300-linux/target"
-  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_HISI"
+  extra_envcmd = "export PATH=${sysenv_path}:${hisi_home}/{binprefix} && "
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -120,7 +125,8 @@ gcc_toolchain("hi3531d_c01") {
   toolprefix = "${binprefix}/arm-hisiv500-linux-"
 
   sysroot = "--sysroot=${hisi_home}/arm-hisiv500-linux/target"
-  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DLINUX_HISI"
+  extra_envcmd = "export PATH=${sysenv_path}:${hisi_home}/{binprefix} && "
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -147,7 +153,8 @@ gcc_toolchain("hi3531d_c02") {
   toolprefix = "${binprefix}/arm-hisiv600-linux-"
 
   sysroot = "--sysroot=${hisi_home}/arm-hisiv600-linux/target"
-  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DLINUX_HISI"
+  extra_envcmd = "export PATH=${sysenv_path}:${hisi_home}/{binprefix} && "
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -174,7 +181,8 @@ gcc_toolchain("hi3561a") {
   toolprefix = "${binprefix}/arm-hisiv610-linux-"
 
   sysroot = "--sysroot=${hisi_home}/arm-hisiv610-linux/target"
-  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon-vfpv4 -mthumb"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon-vfpv4 -mthumb -DLINUX_HISI"
+  extra_envcmd = "export PATH=${sysenv_path}:${hisi_home}/{binprefix} && "
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
