@@ -13,7 +13,7 @@ gcc_toolchain("r16") {
 
   sysroot = "--sysroot=${allwinner_home}/r16"
   flags = "-march=armv7-a -mtune=cortex-a15 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6"
-  extra_envcmd = "export STAGING_DIR=${allwinner_home}/r16 &&"
+  extra_envcmd = "export PATH=${PATH}:${binprefix} && export STAGING_DIR=${allwinner_home}/r16 &&"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -41,7 +41,7 @@ gcc_toolchain("r328") {
 
   sysroot = "--sysroot=${allwinner_home}/r328"
   flags = "-march=armv7-a -mtune=cortex-a7 -mfloat-abi=hard -mfpu=vfpv4 -mthumb -DNOT_SUPPORT_AF_INET6"
-  extra_envcmd = "export STAGING_DIR=${allwinner_home}/r328 &&"
+  extra_envcmd = "export PATH=${PATH}:${binprefix} && export STAGING_DIR=${allwinner_home}/r328 &&"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"

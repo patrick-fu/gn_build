@@ -13,6 +13,7 @@ gcc_toolchain("sgks6802") {
 
   sysroot = "--sysroot=${gokeic_home}/sgks6802/arm-linux-gcc-4.8.5/arm-buildroot-linux-gnueabi/sysroot"
   flags = "-march=armv7-a -mtune=cortex-a7 -mfloat-abi=softfp -mfpu=neon-vfpv4 -mthumb -DNOT_SUPPORT_AF_INET6"
+  extra_envcmd = "export LD_LIBRARY_PATH=${gokeic_home}/sgks6802/arm-linux-gcc-4.8.5/lib &&"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"

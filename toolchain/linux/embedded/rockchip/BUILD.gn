@@ -13,6 +13,7 @@ gcc_toolchain("px3se") {
 
   sysroot = "--sysroot=${rockchip_home}/px3se/usr/arm-rockchip-linux-gnueabihf/sysroot"
   flags = "-march=armv7-a -mtune=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mthumb"
+  extra_envcmd = "export PATH=${PATH}:${binprefix} && export LD_LIBRARY_PATH=${rockchip_home}/px3se/usr/lib &&"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -40,6 +41,7 @@ gcc_toolchain("rk356x") {
 
   sysroot = "--sysroot=${rockchip_home}/rk356x/aarch64-rockchip-linux-gnu/sysroot"
   flags = "-march=armv8-a -mtune=cortex-a55 -mabi=lp64"
+  extra_envcmd = "export LD_LIBRARY_PATH=${rockchip_home}/rk356x/lib &&"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
