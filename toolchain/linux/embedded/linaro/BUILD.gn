@@ -5,6 +5,7 @@
 import("//build/toolchain/gcc_toolchain.gni")
 
 linaro_home = getenv("LINARO_HOME")
+sysenv_path = getenv("PATH")
 
 # linaro-v4-9-4-arm
 gcc_toolchain("v4.9.4") {

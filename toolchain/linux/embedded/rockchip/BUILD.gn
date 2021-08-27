@@ -5,6 +5,7 @@
 import("//build/toolchain/gcc_toolchain.gni")
 
 rockchip_home = getenv("ROCKCHIP_HOME")
+sysenv_path = getenv("PATH")
 
 # rockchip-px3se
 gcc_toolchain("px3se") {
@@ -13,7 +14,7 @@ gcc_toolchain("px3se") {
 
   sysroot = "--sysroot=${rockchip_home}/px3se/usr/arm-rockchip-linux-gnueabihf/sysroot"
   flags = "-march=armv7-a -mtune=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mthumb"
-  extra_envcmd = "export PATH=${PATH}:${binprefix} && export LD_LIBRARY_PATH=${rockchip_home}/px3se/usr/lib &&"
+  extra_envcmd = "export PATH=${sysenv_path}:${binprefix} && export LD_LIBRARY_PATH=${rockchip_home}/px3se/usr/lib &&"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"

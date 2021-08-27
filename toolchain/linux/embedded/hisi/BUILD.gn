@@ -5,6 +5,7 @@
 import("//build/toolchain/gcc_toolchain.gni")
 
 hisi_home = getenv("HISI_HOME")
+sysenv_path = getenv("PATH")
 
 # hisi-himix100
 gcc_toolchain("hi3559v200") {

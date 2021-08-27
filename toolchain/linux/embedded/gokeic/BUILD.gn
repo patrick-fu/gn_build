@@ -5,6 +5,7 @@
 import("//build/toolchain/gcc_toolchain.gni")
 
 gokeic_home = getenv("GOKEIC_HOME")
+sysenv_path = getenv("PATH")
 
 # gokeic-sgks6802
 gcc_toolchain("sgks6802") {
