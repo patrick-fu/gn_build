@@ -5,7 +5,6 @@
 import("//build/toolchain/gcc_toolchain.gni")
 
 novatek_home = getenv("NOVATEK_HOME")
-sysenv_path = getenv("PATH")
 
 # novatek-24kec
 gcc_toolchain("24kec") {

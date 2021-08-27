@@ -5,7 +5,6 @@
 import("//build/toolchain/gcc_toolchain.gni")
 
 alios_home = getenv("ALIOS_HOME")
-sysenv_path = getenv("PATH")
 
 # alios-api-4-arm64
 gcc_toolchain("alios4_arm64") {
