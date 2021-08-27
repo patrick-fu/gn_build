@@ -339,6 +339,9 @@ config("compiler") {
       # The x86 toolchain currently has problems with stack-protector.
       if (is_android && current_cpu == "x86") {
         cflags += [ "-fno-stack-protector" ]
+      } else if (is_linux) {
+        # ingenic and novatek cant use it
+        # cflags += [ "-fstack-protector" ]
       } else if (current_os != "aix") {
         # Not available on aix.
         cflags += [ "-fstack-protector" ]
