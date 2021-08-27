@@ -12,7 +12,7 @@ gcc_toolchain("24kec") {
   toolprefix = "${binprefix}/mipsel-24kec-linux-uclibc-"
 
   sysroot = "--sysroot=${novatek_home}/mipsel-24kec/usr/mipsel-24kec-linux-uclibc/sysroot"
-  flags = "-march=24kec -DNOT_SUPPORT_AF_INET6"
+  flags = "-march=24kec -DNOT_SUPPORT_AF_INET6 -DLINUX_NOVATEK"
   extra_envcmd = "export LD_LIBRARY_PATH=${novatek_home}/mipsel-24kec/usr/lib &&"
 
   extra_cflags = "${sysroot} ${flags}"
