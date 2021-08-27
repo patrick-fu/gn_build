@@ -16,7 +16,7 @@ gcc_toolchain("hi3559v200") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -43,7 +43,7 @@ gcc_toolchain("hi3516d") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -70,7 +70,7 @@ gcc_toolchain("hi3531a_c01") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -97,7 +97,7 @@ gcc_toolchain("hi3536") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -124,7 +124,7 @@ gcc_toolchain("hi3531d_c01") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -151,7 +151,7 @@ gcc_toolchain("hi3531d_c02") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -178,7 +178,7 @@ gcc_toolchain("hi3561a") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"

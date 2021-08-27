@@ -18,7 +18,7 @@ gcc_toolchain("r16") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -46,7 +46,7 @@ gcc_toolchain("r328") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"

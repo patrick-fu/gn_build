@@ -16,7 +16,7 @@ gcc_toolchain("v4.9.4") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -43,7 +43,7 @@ gcc_toolchain("v4.9.4-armhf") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -70,7 +70,7 @@ gcc_toolchain("v5.5.0") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -97,7 +97,7 @@ gcc_toolchain("v5.5.0-armhf") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -124,7 +124,7 @@ gcc_toolchain("v5.5.0-aarch64") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -151,7 +151,7 @@ gcc_toolchain("v7.3.1") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
@@ -178,7 +178,7 @@ gcc_toolchain("v7.3.1-armhf") {
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = ""
+  extra_ldflags = "${sysroot}"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"

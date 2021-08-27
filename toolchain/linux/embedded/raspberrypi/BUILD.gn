@@ -4,16 +4,15 @@
 
 import("//build/toolchain/gcc_toolchain.gni")
 
-gokeic_home = getenv("GOKEIC_HOME")
+raspberrypi_home = getenv("RASPBERRYPI_HOME")
 
-# gokeic-sgks6802
-gcc_toolchain("sgks6802") {
-  binprefix = "${gokeic_home}/sgks6802/arm-linux-gcc-4.8.5/bin"
-  toolprefix = "${binprefix}/arm-buildroot-linux-gnueabi-"
+# raspberrypi-bcm2837
+gcc_toolchain("bcm2837") {
+  binprefix = "${raspberrypi_home}/arm-rpi-4.9.3-linux-gnueabihf/bin"
+  toolprefix = "${binprefix}/arm-linux-gnueabihf-"
 
-  sysroot = "--sysroot=${gokeic_home}/sgks6802/arm-linux-gcc-4.8.5/arm-buildroot-linux-gnueabi/sysroot"
-  flags = "-march=armv7-a -mtune=cortex-a7 -mfloat-abi=softfp -mfpu=neon-vfpv4 -mthumb -DNOT_SUPPORT_AF_INET6"
-  extra_envcmd = "export LD_LIBRARY_PATH=${gokeic_home}/sgks6802/arm-linux-gcc-4.8.5/lib &&"
+  sysroot = "--sysroot=${raspberrypi_home}/arm-rpi-4.9.3-linux-gnueabihf/arm-linux-gnueabihf/sysroot"
+  flags = " -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard -mlittle-endian -munaligned-access -DLINUX_RASPBERRYPI"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"

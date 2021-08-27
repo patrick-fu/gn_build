@@ -15,7 +15,7 @@ gcc_toolchain("mdm9607") {
   sysroot = "--sysroot=${neoway_home}/arm-oe/sysroots/armv7a-vfp-neon-oe-linux-gnueabi"
   flags = "-march=armv7-a -mfloat-abi=softfp -mfpu=neon -mthumb -fexpensive-optimizations  -frename-registers  -fomit-frame-pointer  -fstack-protector-strong  -pie  -fpie  -Wa,--noexecstack "
   extra_envcmd = "export LD_LIBRARY_PATH=${binprefix} && export PATH=${sysenv_path}:${binprefix} && "
-  extra_ldflags = "-Wl,-O1  -Wl,--hash-style=gnu   -Wl,--as-needed   -Wl,-z,relro,-z,now,-z,noexecstack"
+  extra_ldflags = "${sysroot} -Wl,-O1  -Wl,--hash-style=gnu   -Wl,--as-needed   -Wl,-z,relro,-z,now,-z,noexecstack"
  
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
