@@ -6,8 +6,8 @@ import("//build/toolchain/gcc_toolchain.gni")
 
 ingenic_home = getenv("INGENIC_HOME")
 
-# ingenic-am335x
-gcc_toolchain("am335x") {
+# ingenic-camera
+gcc_toolchain("camera") {
   binprefix = "${ingenic_home}/camera/bin"
   toolprefix = "${binprefix}/mips-linux-gnu-"
 
