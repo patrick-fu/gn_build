@@ -10,7 +10,7 @@ import("//build/toolchain/gcc_toolchain.gni")
 # linux-gcc-aarch64-lp64
 gcc_toolchain("arm_linux") {
   binprefix = ""
-  toolprefix = "${binprefix}/aarch64-linux-gnu-"
+  toolprefix = "aarch64-linux-gnu-"
 
   sysroot = ""
   flags = "-march=armv8-a -mtune=cortex-a53 -mabi=lp64 -DLINUX_ARM_LINUX"
