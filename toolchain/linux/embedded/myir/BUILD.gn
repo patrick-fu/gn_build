@@ -11,7 +11,8 @@ gcc_toolchain("am335x") {
   binprefix = "${myir_home}/am335x/usr/bin"
   toolprefix = "${binprefix}/arm-myir-linux-gnueabihf-"
 
-  sysroot = "--sysroot=${myir_home}/arm335x/usr/arm-myir-linux-gnueabihf/sysroot"
+  # sysroot = "--sysroot=${myir_home}/arm335x/usr/arm-myir-linux-gnueabihf/sysroot"
+  sysroot = ""
   flags = "-march=armv7-a -mtune=cortex-a8 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_MYIR"
   extra_envcmd = "export LD_LIBRARY_PATH=${myir_home}/am335x/usr/lib && "
 
