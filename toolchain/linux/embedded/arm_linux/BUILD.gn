@@ -4,20 +4,21 @@
 
 import("//build/toolchain/gcc_toolchain.gni")
 
-ingenic_home = getenv("INGENIC_HOME")
+# arm_linux_home = getenv("ARM_LINUX_HOME")
+# sysenv_path = getenv("PATH")
 
-# ingenic-am335x
-gcc_toolchain("am335x") {
-  binprefix = "${ingenic_home}/camera/bin"
-  toolprefix = "${binprefix}/mips-linux-gnu-"
+# linux-gcc-aarch64-lp64
+gcc_toolchain("arm_linux") {
+  binprefix = ""
+  toolprefix = "${binprefix}/aarch64-linux-gnu-"
 
-  # sysroot = "--sysroot=${ingenic_home}/camera/mips-linux-gnu/libc/uclibc"
   sysroot = ""
-  flags = "-ffunction-sections -fdata-sections -muclibc -DNOT_SUPPORT_AF_INET6 -DNOT_SUPPORT_HTTPS -DLINUX_INGENIC"
+  flags = "-march=armv8-a -mtune=cortex-a53 -mabi=lp64 -DLINUX_ARM_LINUX"
+  extra_envcmd = ""
+  extra_ldflags = "${sysroot}"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
-  extra_ldflags = "${sysroot} -Wl,--gc-sections"
 
   cc = "${toolprefix}gcc"
   cxx = "${toolprefix}g++"
