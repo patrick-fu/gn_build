@@ -9,7 +9,6 @@ import("//build/toolchain/gcc_toolchain.gni")
 
 # linux-gcc-aarch64-lp64
 gcc_toolchain("arm_linux") {
-  binprefix = ""
   toolprefix = "aarch64-linux-gnu-"
 
   sysroot = ""
