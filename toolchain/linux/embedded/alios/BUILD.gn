@@ -12,7 +12,7 @@ gcc_toolchain("alios4_arm64") {
   toolprefix = "${binprefix}/aarch64-linux-gnueabi-"
 
   sysroot = "--sysroot=${alios_home}/standalone/yunos-4-arm64/sysroot"
-  flags = "-mabi=lp64 -DLINUX_ALIOS"
+  flags = "-mabi=lp64 -DLINUX_ALIOS -D_GLIBCXX_USE_C99"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -39,7 +39,7 @@ gcc_toolchain("alios4_armhf") {
   toolprefix = "${binprefix}/arm-linux-gnueabihf-"
 
   sysroot = "--sysroot=${alios_home}/standalone/yunos-4-armhf/sysroot"
-  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=hard -mfpu=vfpv3-d16 -DLINUX_ALIOS"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=hard -mfpu=vfpv3-d16 -DLINUX_ALIOS -D_GLIBCXX_USE_C99"
 
 
 
@@ -68,7 +68,7 @@ gcc_toolchain("alios4_x86_64") {
   toolprefix = "${binprefix}/x86_64-linux-gnu-"
 
   sysroot = "--sysroot=${alios_home}/standalone/yunos-4-x86_64/sysroot"
-  flags = "-march=x86-64 -mtune=generic -DLINUX_ALIOS"
+  flags = "-march=x86-64 -mtune=generic -DLINUX_ALIOS -D_GLIBCXX_USE_C99"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"

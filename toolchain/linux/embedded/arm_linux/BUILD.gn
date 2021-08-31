@@ -12,7 +12,7 @@ gcc_toolchain("arm_linux") {
   toolprefix = "aarch64-linux-gnu-"
 
   sysroot = ""
-  flags = "-march=armv8-a -mtune=cortex-a53 -mabi=lp64 -std=c++11 -DLINUX_ARM_LINUX"
+  flags = "-march=armv8-a -mtune=cortex-a53 -mabi=lp64 -std=c++11 -DLINUX_ARM_LINUX -D_GLIBCXX_USE_C99"
   extra_envcmd = ""
   extra_ldflags = "${sysroot}"
 

@@ -13,7 +13,7 @@ gcc_toolchain("camera") {
 
   # sysroot = "--sysroot=${ingenic_home}/camera/mips-linux-gnu/libc/uclibc"
   sysroot = ""
-  flags = "-ffunction-sections -fdata-sections -muclibc -std=c++11 -DNOT_SUPPORT_AF_INET6 -DNOT_SUPPORT_HTTPS -DLINUX_INGENIC"
+  flags = "-ffunction-sections -fdata-sections -muclibc -std=c++11 -DNOT_SUPPORT_AF_INET6 -DNOT_SUPPORT_HTTPS -DLINUX_INGENIC -D_GLIBCXX_USE_C99"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
