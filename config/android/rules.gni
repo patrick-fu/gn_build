@@ -35,6 +35,32 @@ if (use_cfi_diag || is_ubsan || is_ubsan_security || is_ubsan_vptr) {
   _sanitizer_runtimes = [ "$clang_base_path/lib/clang/$clang_version/lib/linux/libclang_rt.ubsan_standalone-$_sanitizer_arch-android.so" ]
 }
 
+# Collect java source folders for gradle
+#
+# Just need to set "sources" to a list of java folders
+# which need to be collected and compiled by gradle's javac.
+# This template will copy all sources to the folder:
+# "$root_build_dir/javasrc/$target_name/{{source_file_part}}"
+#
+# Example
+#   if (is_android) {
+#     collect_javasrc("net-monitor_java") {
+#       sources = [
+#         "//kernel/modules/net-monitor/android/java",
+#       ]
+#     }
+#   }
+#
+# Result: ${out_dir}/javasrc/net-monitor_java/java
+template("collect_javasrc") {
+  assert(defined(invoker.sources),
+         "sources must be defined for $target_name")
+  copy(target_name) {
+    sources = invoker.sources
+    outputs = [ "$root_build_dir/javasrc/$target_name/{{source_file_part}}" ]
+  }
+}
+
 # Creates a dist directory for a native executable.
 #
 # Running a native executable on a device requires all the shared library
