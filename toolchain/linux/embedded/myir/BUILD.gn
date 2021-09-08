@@ -28,9 +28,4 @@ gcc_toolchain("am335x") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
-
-  toolchain_args = {
-    current_cpu = "arm"
-    current_os = "linux"
-  }
 }

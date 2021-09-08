@@ -28,11 +28,6 @@ gcc_toolchain("r16") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
-
-  toolchain_args = {
-    current_cpu = "arm"
-    current_os = "linux"
-  }
 }
 
 # allwinner-r328
@@ -56,9 +51,4 @@ gcc_toolchain("r328") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
-
-  toolchain_args = {
-    current_cpu = "arm"
-    current_os = "linux"
-  }
 }

@@ -16,7 +16,7 @@ gcc_toolchain("mdm9607") {
   flags = "-march=armv7-a -mfloat-abi=softfp -mfpu=neon -mthumb -fexpensive-optimizations  -frename-registers  -fomit-frame-pointer  -fstack-protector-strong  -pie  -fpie  -Wa,--noexecstack -DLINUX_NEOWAY -D_GLIBCXX_USE_C99"
   extra_envcmd = "export LD_LIBRARY_PATH=${binprefix} && export PATH=${sysenv_path}:${binprefix} && "
   extra_ldflags = "${sysroot} -Wl,-O1  -Wl,--hash-style=gnu   -Wl,--as-needed   -Wl,-z,relro,-z,now,-z,noexecstack"
- 
+
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
 
@@ -28,9 +28,4 @@ gcc_toolchain("mdm9607") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
-
-  toolchain_args = {
-    current_cpu = "arm"
-    current_os = "linux"
-  }
 }
