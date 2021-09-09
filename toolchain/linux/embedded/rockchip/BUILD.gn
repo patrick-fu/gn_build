@@ -28,6 +28,11 @@ gcc_toolchain("px3se") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # rockchip-rk356x
@@ -51,4 +56,9 @@ gcc_toolchain("rk356x") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }

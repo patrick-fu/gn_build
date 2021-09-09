@@ -26,6 +26,11 @@ gcc_toolchain("v4.9.4") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # linaro-v4-9-4-armhf
@@ -48,6 +53,11 @@ gcc_toolchain("v4.9.4-armhf") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # linaro-v5-5-0-arm
@@ -70,6 +80,11 @@ gcc_toolchain("v5.5.0") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # linaro-v5-5-0-armhf
@@ -92,6 +107,11 @@ gcc_toolchain("v5.5.0-armhf") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # linaro-v5-5-0-aarch64-linux-gnu
@@ -114,6 +134,11 @@ gcc_toolchain("v5.5.0-aarch64") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm64"
+    current_os = "linux"
+  }
 }
 
 # linaro-v7-3-1-arm
@@ -136,6 +161,11 @@ gcc_toolchain("v7.3.1") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # linaro-v7-3-1-armhf
@@ -158,4 +188,9 @@ gcc_toolchain("v7.3.1-armhf") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }

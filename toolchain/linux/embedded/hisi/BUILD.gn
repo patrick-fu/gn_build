@@ -28,6 +28,11 @@ gcc_toolchain("hi3559v200") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # hisi-himix200
@@ -51,6 +56,11 @@ gcc_toolchain("hi3516d") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # hisi-v300
@@ -74,6 +84,11 @@ gcc_toolchain("hi3531a_c01") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # hisi-v300
@@ -97,6 +112,11 @@ gcc_toolchain("hi3536") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # hisi-v500
@@ -120,6 +140,11 @@ gcc_toolchain("hi3531d_c01") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # hisi-v600
@@ -143,6 +168,11 @@ gcc_toolchain("hi3531d_c02") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # hisi-v610
@@ -166,4 +196,9 @@ gcc_toolchain("hi3561a") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }

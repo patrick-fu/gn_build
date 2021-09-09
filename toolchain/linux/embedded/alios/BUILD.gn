@@ -26,6 +26,11 @@ gcc_toolchain("alios4_arm64") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # alios-api-4-armhf
@@ -50,6 +55,11 @@ gcc_toolchain("alios4_armhf") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
 
 # alios-api-4-x86_64
@@ -72,4 +82,9 @@ gcc_toolchain("alios4_x86_64") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }

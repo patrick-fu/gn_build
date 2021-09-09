@@ -26,4 +26,9 @@ gcc_toolchain("bcm2837") {
   nm = "${toolprefix}nm"
   strip = "${toolprefix}strip"
   readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
 }
