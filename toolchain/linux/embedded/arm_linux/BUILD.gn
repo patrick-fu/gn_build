@@ -29,7 +29,7 @@ gcc_toolchain("arm_linux") {
   readelf = "${toolprefix}readelf"
 
   toolchain_args = {
-    current_cpu = "arm"
+    current_cpu = "arm64"
     current_os = "linux"
   }
 }

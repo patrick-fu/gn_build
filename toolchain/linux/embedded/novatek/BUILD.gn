@@ -29,7 +29,7 @@ gcc_toolchain("24kec") {
   readelf = "${toolprefix}readelf"
 
   toolchain_args = {
-    current_cpu = "arm"
+    current_cpu = "mipsel"
     current_os = "linux"
   }
 }

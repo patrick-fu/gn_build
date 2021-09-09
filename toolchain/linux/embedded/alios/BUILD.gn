@@ -28,7 +28,7 @@ gcc_toolchain("alios4_arm64") {
   readelf = "${toolprefix}readelf"
 
   toolchain_args = {
-    current_cpu = "arm"
+    current_cpu = "arm64"
     current_os = "linux"
   }
 }
@@ -84,7 +84,7 @@ gcc_toolchain("alios4_x86_64") {
   readelf = "${toolprefix}readelf"
 
   toolchain_args = {
-    current_cpu = "arm"
+    current_cpu = "x64"
     current_os = "linux"
   }
 }

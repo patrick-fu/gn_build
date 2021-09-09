@@ -29,7 +29,7 @@ gcc_toolchain("camera") {
   readelf = "${toolprefix}readelf"
 
   toolchain_args = {
-    current_cpu = "arm"
+    current_cpu = "mips"
     current_os = "linux"
   }
 }
