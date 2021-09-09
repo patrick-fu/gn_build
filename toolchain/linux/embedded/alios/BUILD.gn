@@ -1,0 +1,90 @@
+# Copyright 2021 PatrickFu @ ZEGO. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/toolchain/gcc_toolchain.gni")
+
+alios_home = getenv("ALIOS_HOME")
+
+# alios-api-4-arm64
+gcc_toolchain("alios4_arm64") {
+  binprefix = "${alios_home}/standalone/yunos-4-arm64/bin"
+  toolprefix = "${binprefix}/aarch64-linux-gnueabi-"
+
+  sysroot = "--sysroot=${alios_home}/standalone/yunos-4-arm64/sysroot"
+  flags = "-mabi=lp64 -DLINUX_ALIOS -D_GLIBCXX_USE_C99"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+  extra_ldflags = "${sysroot}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm64"
+    current_os = "linux"
+  }
+}
+
+# alios-api-4-armhf
+gcc_toolchain("alios4_armhf") {
+  binprefix = "${alios_home}/standalone/yunos-4-armhf/bin"
+  toolprefix = "${binprefix}/arm-linux-gnueabihf-"
+
+  sysroot = "--sysroot=${alios_home}/standalone/yunos-4-armhf/sysroot"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=hard -mfpu=vfpv3-d16 -DLINUX_ALIOS -D_GLIBCXX_USE_C99"
+
+
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+  extra_ldflags = "${sysroot}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
+
+# alios-api-4-x86_64
+gcc_toolchain("alios4_x86_64") {
+  binprefix = "${alios_home}/standalone/yunos-4-x86_64/bin"
+  toolprefix = "${binprefix}/x86_64-linux-gnu-"
+
+  sysroot = "--sysroot=${alios_home}/standalone/yunos-4-x86_64/sysroot"
+  flags = "-march=x86-64 -mtune=generic -DLINUX_ALIOS -D_GLIBCXX_USE_C99"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+  extra_ldflags = "${sysroot}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "x64"
+    current_os = "linux"
+  }
+}

@@ -1,0 +1,36 @@
+# Copyright 2021 PatrickFu @ ZEGO. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/toolchain/gcc_toolchain.gni")
+
+neoway_home = getenv("NEOWAY_HOME")
+sysenv_path = getenv("PATH")
+
+# neoway-mdm9607
+gcc_toolchain("mdm9607") {
+  binprefix = "${neoway_home}/arm-oe/sysroots/x86_64-oesdk-linux/usr/bin/arm-oe-linux-gnueabi"
+  toolprefix = "${binprefix}/arm-oe-linux-gnueabi-"
+
+  sysroot = "--sysroot=${neoway_home}/arm-oe/sysroots/armv7a-vfp-neon-oe-linux-gnueabi"
+  flags = "-march=armv7-a -mfloat-abi=softfp -mfpu=neon -mthumb -fexpensive-optimizations  -frename-registers  -fomit-frame-pointer  -fstack-protector-strong  -pie  -fpie  -Wa,--noexecstack -DLINUX_NEOWAY -D_GLIBCXX_USE_C99"
+  extra_envcmd = "export LD_LIBRARY_PATH=${binprefix} && export PATH=${sysenv_path}:${binprefix} && "
+  extra_ldflags = "${sysroot} -Wl,-O1  -Wl,--hash-style=gnu   -Wl,--as-needed   -Wl,-z,relro,-z,now,-z,noexecstack"
+ 
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}

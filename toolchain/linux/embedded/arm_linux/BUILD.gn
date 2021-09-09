@@ -1,0 +1,35 @@
+# Copyright 2021 PatrickFu @ ZEGO. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/toolchain/gcc_toolchain.gni")
+
+# arm_linux_home = getenv("ARM_LINUX_HOME")
+# sysenv_path = getenv("PATH")
+
+# linux-gcc-aarch64-lp64
+gcc_toolchain("arm_linux") {
+  toolprefix = "aarch64-linux-gnu-"
+
+  sysroot = ""
+  flags = "-march=armv8-a -mtune=cortex-a53 -mabi=lp64 -std=c++11 -DLINUX_ARM_LINUX -D_GLIBCXX_USE_C99"
+  extra_envcmd = ""
+  extra_ldflags = "${sysroot}"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm64"
+    current_os = "linux"
+  }
+}

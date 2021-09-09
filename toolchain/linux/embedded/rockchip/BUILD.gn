@@ -1,0 +1,64 @@
+# Copyright 2021 PatrickFu @ ZEGO. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/toolchain/gcc_toolchain.gni")
+
+rockchip_home = getenv("ROCKCHIP_HOME")
+sysenv_path = getenv("PATH")
+
+# rockchip-px3se
+gcc_toolchain("px3se") {
+  binprefix = "${rockchip_home}/px3se/usr/bin"
+  toolprefix = "${binprefix}/arm-rockchip-linux-gnueabihf-"
+
+  sysroot = "--sysroot=${rockchip_home}/px3se/usr/arm-rockchip-linux-gnueabihf/sysroot"
+  flags = "-march=armv7-a -mtune=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mthumb -DLINUX_ROCKCHIP -D_GLIBCXX_USE_C99"
+  extra_envcmd = "export PATH=${sysenv_path}:${binprefix} && export LD_LIBRARY_PATH=${rockchip_home}/px3se/usr/lib &&"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+  extra_ldflags = "${sysroot}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
+
+# rockchip-rk356x
+gcc_toolchain("rk356x") {
+  binprefix = "${rockchip_home}/rk356x/bin"
+  toolprefix = "${binprefix}/aarch64-linux-"
+
+  sysroot = "--sysroot=${rockchip_home}/rk356x/aarch64-rockchip-linux-gnu/sysroot"
+  flags = "-march=armv8-a -mtune=cortex-a55 -mabi=lp64 -DLINUX_ROCKCHIP -D_GLIBCXX_USE_C99"
+  extra_envcmd = "export LD_LIBRARY_PATH=${rockchip_home}/rk356x/lib &&"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+  extra_ldflags = "${sysroot}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm64"
+    current_os = "linux"
+  }
+}

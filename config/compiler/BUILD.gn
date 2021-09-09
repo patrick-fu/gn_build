@@ -339,6 +339,9 @@ config("compiler") {
       # The x86 toolchain currently has problems with stack-protector.
       if (is_android && current_cpu == "x86") {
         cflags += [ "-fno-stack-protector" ]
+      } else if (is_linux) {
+        # ingenic and novatek cant use it
+        # cflags += [ "-fstack-protector" ]
       } else if (current_os != "aix") {
         # Not available on aix.
         cflags += [ "-fstack-protector" ]
@@ -588,7 +591,9 @@ config("compiler") {
       # TODO(thomasanderson): Replace usages of ##__VA_ARGS__ with the
       # standard-compliant __VA_OPT__ added by C++20, and switch the gcc build
       # to -std=c*.
-      standard_prefix = "gnu"
+      
+      # standard_prefix = "gnu"
+      standard_prefix = "c"
     }
 
     cflags_c += [ "-std=${standard_prefix}11" ]

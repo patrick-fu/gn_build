@@ -1,0 +1,36 @@
+# Copyright 2021 PatrickFu @ ZEGO. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/toolchain/gcc_toolchain.gni")
+
+myir_home = getenv("MYIR_HOME")
+
+# myir-am335x
+gcc_toolchain("am335x") {
+  binprefix = "${myir_home}/am335x/usr/bin"
+  toolprefix = "${binprefix}/arm-myir-linux-gnueabihf-"
+
+  # sysroot = "--sysroot=${myir_home}/arm335x/usr/arm-myir-linux-gnueabihf/sysroot"
+  sysroot = ""
+  flags = "-march=armv7-a -mtune=cortex-a8 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_MYIR -D_GLIBCXX_USE_C99"
+  extra_envcmd = "export LD_LIBRARY_PATH=${myir_home}/am335x/usr/lib && "
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+  extra_ldflags = "${sysroot}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}

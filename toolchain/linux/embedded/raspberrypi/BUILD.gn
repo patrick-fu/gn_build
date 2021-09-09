@@ -1,0 +1,34 @@
+# Copyright 2021 PatrickFu @ ZEGO. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/toolchain/gcc_toolchain.gni")
+
+raspberrypi_home = getenv("RASPBERRYPI_HOME")
+
+# raspberrypi-bcm2837
+gcc_toolchain("bcm2837") {
+  binprefix = "${raspberrypi_home}/arm-rpi-4.9.3-linux-gnueabihf/bin"
+  toolprefix = "${binprefix}/arm-linux-gnueabihf-"
+
+  sysroot = "--sysroot=${raspberrypi_home}/arm-rpi-4.9.3-linux-gnueabihf/arm-linux-gnueabihf/sysroot"
+  flags = " -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard -mlittle-endian -munaligned-access -DLINUX_RASPBERRYPI -D_GLIBCXX_USE_C99"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+  extra_ldflags = "${sysroot}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
