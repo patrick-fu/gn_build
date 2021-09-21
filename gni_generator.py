@@ -74,12 +74,13 @@ def generate_gni(root_path: str, gni_name: str, recursive: bool, use_related_pat
     filelist.sort()
     for f in filelist:
         # Convert windows style separator to unix style
-        f = f.replace('\\', '/')
         if use_related_path:
             f = f[len(root_path):].lstrip(os.sep)
+            f = f.replace('\\', '/')
             file_str = '  "{}",\n'.format(f)
         else:
             f = f[len(PROJ_ROOT):].lstrip(os.sep)
+            f = f.replace('\\', '/')
             file_str = '  "//{}",\n'.format(f)
         filelist_str += file_str
 
