@@ -12,7 +12,7 @@ gcc_toolchain("bcm2837") {
   toolprefix = "${binprefix}/arm-linux-gnueabihf-"
 
   sysroot = "--sysroot=${raspberrypi_home}/arm-rpi-4.9.3-linux-gnueabihf/arm-linux-gnueabihf/sysroot"
-  flags = " -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard -mlittle-endian -munaligned-access -DLINUX_RASPBERRYPI -D_GLIBCXX_USE_C99"
+  flags = " -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard -mlittle-endian -munaligned-access -DLINUX_RASPBERRYPI -DARM_LINUX -D_GLIBCXX_USE_C99"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
