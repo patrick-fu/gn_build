@@ -20,9 +20,6 @@ declare_args() {
   # Turn this on to have the linker output extra timing information.
   win_linker_timing = false
 
-  # we need add /Zc:threadSafeInit- for support winxp loadLibrary
-  target_is_winxp = false
-
   # possible values for target_winuwp_version:
   #   "10" - Windows UWP 10
   #   "8.1" - Windows RT 8.1
@@ -84,7 +81,7 @@ config("compiler") {
     "/Zc:sizedDealloc-",
   ]
 
-  if (target_is_winxp) {
+  if (target_winxp) {
     cflags += [
       "/Zc:threadSafeInit-",
       "/D_USING_V110_SDK71_",
