@@ -84,8 +84,11 @@ config("compiler") {
     "/Zc:sizedDealloc-",
   ]
 
-  if(target_is_winxp){
-    cflags += [ "/Zc:threadSafeInit-" ]
+  if (target_is_winxp) {
+    cflags += [
+      "/Zc:threadSafeInit-",
+      "/D_USING_V110_SDK71_",
+    ]
   }
 
   if (is_clang) {
