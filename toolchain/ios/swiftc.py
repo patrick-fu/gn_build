@@ -166,8 +166,7 @@ def main(args):
   parser.add_argument('-sdk', action='store', help='compile against sdk')
 
   parsed, extras = parser.parse_known_args(args)
-  with tempfile.TemporaryDirectory() as tmpdir:
-    compile_module(parsed.module_name, parsed.sources, parsed, extras, tmpdir)
+  compile_module(parsed.module_name, parsed.sources, parsed, extras, tempfile.gettempdir())
 
 
 if __name__ == '__main__':

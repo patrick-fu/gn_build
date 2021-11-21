@@ -101,8 +101,10 @@ config("runtime_library") {
   if (use_xcode_clang && enable_ios_bitcode && target_environment == "device") {
     if (is_debug) {
       common_flags += [ "-fembed-bitcode-marker" ]
+      swiftflags += [ "-embed-bitcode-marker" ]
     } else {
       common_flags += [ "-fembed-bitcode" ]
+      swiftflags += [ "-embed-bitcode" ]
     }
   }
 
