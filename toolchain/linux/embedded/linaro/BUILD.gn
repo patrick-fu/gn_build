@@ -12,7 +12,7 @@ gcc_toolchain("v4.9.4") {
   toolprefix = "${binprefix}/arm-linux-gnueabi-"
 
   sysroot = "--sysroot=${linaro_home}/v4.9.4/arm-linux-gnueabi/arm-linux-gnueabi/libc"
-  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO  -D_GLIBCXX_USE_C99"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO -DARM_LINUX -D_GLIBCXX_USE_C99"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -39,7 +39,7 @@ gcc_toolchain("v4.9.4-armhf") {
   toolprefix = "${binprefix}/arm-linux-gnueabihf-"
 
   sysroot = "--sysroot=${linaro_home}/v4.9.4/arm-linux-gnueabihf/arm-linux-gnueabihf/libc"
-  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO  -D_GLIBCXX_USE_C99"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO -DARM_LINUX -D_GLIBCXX_USE_C99"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -66,7 +66,7 @@ gcc_toolchain("v5.5.0") {
   toolprefix = "${binprefix}/arm-linux-gnueabi-"
 
   sysroot = "--sysroot=${linaro_home}/v5.5.0/arm-linux-gnueabi/arm-linux-gnueabi/libc"
-  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO  -D_GLIBCXX_USE_C99"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO -DARM_LINUX -D_GLIBCXX_USE_C99"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -93,7 +93,7 @@ gcc_toolchain("v5.5.0-armhf") {
   toolprefix = "${binprefix}/arm-linux-gnueabihf-"
 
   sysroot = "--sysroot=${linaro_home}/v5.5.0/arm-linux-gnueabihf/arm-linux-gnueabihf/libc"
-  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO  -D_GLIBCXX_USE_C99"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO -DARM_LINUX -D_GLIBCXX_USE_C99"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -120,7 +120,7 @@ gcc_toolchain("v5.5.0-aarch64") {
   toolprefix = "${binprefix}/aarch64-linux-gnu-"
 
   sysroot = "--sysroot=${linaro_home}/v5.5.0/aarch64-linux-gnu/aarch64-linux-gnu/libc"
-  flags = "-march=armv8-a -mtune=cortex-a53 -mabi=lp64 -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO  -D_GLIBCXX_USE_C99"
+  flags = "-march=armv8-a -mtune=cortex-a53 -mabi=lp64 -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO -DARM_LINUX -D_GLIBCXX_USE_C99"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -147,7 +147,7 @@ gcc_toolchain("v7.3.1") {
   toolprefix = "${binprefix}/arm-linux-gnueabi-"
 
   sysroot = "--sysroot=${linaro_home}/v7.3.1/arm-linux-gnueabi/arm-linux-gnueabi/libc"
-  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO  -D_GLIBCXX_USE_C99"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO -DARM_LINUX -D_GLIBCXX_USE_C99"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
@@ -174,7 +174,7 @@ gcc_toolchain("v7.3.1-armhf") {
   toolprefix = "${binprefix}/arm-linux-gnueabihf-"
 
   sysroot = "--sysroot=${linaro_home}/v7.3.1/arm-linux-gnueabihf/arm-linux-gnueabihf/libc"
-  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO  -D_GLIBCXX_USE_C99"
+  flags = "-march=armv7-a -mtune=cortex-a9 -mfloat-abi=hard -mfpu=neon -mthumb -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO -DARM_LINUX -D_GLIBCXX_USE_C99"
 
   extra_cflags = "${sysroot} ${flags}"
   extra_cxxflags = "${sysroot} ${flags}"
