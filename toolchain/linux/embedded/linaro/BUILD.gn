@@ -194,3 +194,30 @@ gcc_toolchain("v7.3.1-armhf") {
     current_os = "linux"
   }
 }
+
+# linaro-v7-3-1-aarch64-linux-gnu
+gcc_toolchain("v7.3.1-aarch64") {
+  binprefix = "${linaro_home}/v7.3.1/aarch64-linux-gnu/bin"
+  toolprefix = "${binprefix}/aarch64-linux-gnu-"
+
+  sysroot = "--sysroot=${linaro_home}/v7.3.1/aarch64-linux-gnu/aarch64-linux-gnu/libc"
+  flags = "-march=armv8-a -mtune=cortex-a53 -mabi=lp64 -DNOT_SUPPORT_AF_INET6 -DLINUX_LINARO -DARM_LINUX -D_GLIBCXX_USE_C99"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+  extra_ldflags = "${sysroot}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm64"
+    current_os = "linux"
+  }
+}
