@@ -1,0 +1,42 @@
+# Copyright 2021 Patrick Fu. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/util/append_global_list.gni")
+
+# Template to collect the exported symbols into a global file
+# located in the "$root_gen_dir/exported_symbols_list.txt"
+#
+# Arguments:
+#
+#     symbols:
+#         (required), list of string, the symbols to be exported.
+#
+#     expired_seconds:
+#         (optional), int in string format, how many seconds can it take to
+#                     execute "gn gen" command, this value determines how many
+#                     seconds to clean up the specified global variable file.
+#
+# Example:
+#
+#     collect_exported_symbols("objc_symbols") {
+#       symbols = [
+#         "_OBJC_CLASS_$_ZegoError",
+#         "_OBJC_METACLASS_$_ZegoError",
+#         "_OBJC_CLASS_$_ZegoUser",
+#         "_OBJC_METACLASS_$_ZegoUser",
+#       ]
+#     }
+#
+template("collect_exported_symbols") {
+  assert(defined(invoker.symbols),
+         "symbols must be defined for $target_name")
+
+  forward_variables_from(invoker, [ "expired_seconds" ])
+  _values = invoker.symbols
+
+  append_global_list(target_name) {
+    filename = "exported_symbols_list.txt"
+    values = _values
+  }
+}
