@@ -1,0 +1,59 @@
+# Copyright 2021 Patrick Fu. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+
+# Template to append some string values to a global list file
+#
+# Arguments:
+#     filename:
+#         (required), string, the global file name, note that it will saved
+#                     in the "$root_gen_dir/$filename" file.
+#
+#     values:
+#         (required), list of string, the values to be appended to the file.
+#
+#     expired_seconds:
+#         (optional), int in string format, how many seconds can it take to
+#                     execute "gn gen" command, this value determines how many
+#                     seconds to clean up the specified global variable file.
+#
+# Example:
+#
+#     # It will genereated a "$root_gen_dir/my_global_files.txt" file
+#     append_global_list("my_file_names") {
+#       filename = "my_global_files.txt"
+#       values = [
+#         "HelloWorld.h",
+#         "HelloWorld.cc",
+#       ]
+#     }
+#
+template("append_global_list") {
+  assert(defined(invoker.filename),
+         "filename must be defined for $target_name")
+  assert(defined(invoker.values),
+         "values must be defined for $target_name")
+
+  _filename = invoker.filename
+
+  # How many seconds can it take to execute "gn gen" command
+  if (defined(invoker.expired_seconds)) {
+    _expired_seconds = invoker.expired_seconds
+  } else {
+    # Default to 15 seconds, which is generally enough for execute "gn gen"
+    _expired_seconds = "15"
+  }
+
+  action(target_name) {
+    script = "//build/util/append_global_list.py"
+    _stamp_path = "${target_gen_dir}/${target_name}_append_global_list.stamp"
+    outputs = [_stamp_path]
+    args = [
+      "--file",
+      rebase_path("$root_gen_dir/$_filename", root_build_dir),
+      "--expired-seconds",
+      _expired_seconds
+    ] + invoker.values
+  }
+}
