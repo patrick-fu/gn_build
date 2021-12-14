@@ -1,5 +1,7 @@
-#!/usr/bin/env python
-# Copyright 2016 The Chromium Authors. All rights reserved.
+#!/usr/bin/env python3
+#
+# Copyright 2016 Google Inc.
+#
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -18,9 +20,11 @@ The first is recommended, as it will auto-update.
 
 from __future__ import print_function
 
+import itertools
 import functools
 import json
 import posixpath
+import os
 import string
 import sys
 
@@ -50,7 +54,7 @@ def CMakeTargetEscape(a):
       return c
     else:
       return '__'
-  return ''.join([Escape(c) for c in a])
+  return ''.join(map(Escape, a))
 
 
 def SetVariable(out, variable_name, value):
@@ -112,6 +116,8 @@ source_file_types = {
   '.cc': 'cxx',
   '.cpp': 'cxx',
   '.cxx': 'cxx',
+  '.m': 'objc',
+  '.mm': 'objcc',
   '.c': 'c',
   '.s': 'asm',
   '.S': 'asm',
@@ -137,7 +143,7 @@ cmake_target_types = {
   'executable': CMakeTargetType('add_executable', None, 'RUNTIME', True),
   'loadable_module': CMakeTargetType('add_library', 'MODULE', 'LIBRARY', True),
   'shared_library': CMakeTargetType('add_library', 'SHARED', 'LIBRARY', True),
-  'static_library': CMakeTargetType('add_library', 'STATIC', 'ARCHIVE', False),
+  'static_library': CMakeTargetType('add_library', 'STATIC', 'ARCHIVE', True),
   'source_set': CMakeTargetType('add_library', 'OBJECT', None, False),
   'copy': CMakeTargetType.custom,
   'action': CMakeTargetType.custom,
@@ -151,69 +157,28 @@ def FindFirstOf(s, a):
   return min(s.find(i) for i in a if i in s)
 
 
-def GetCMakeTargetName(gn_target_name):
-  # See <chromium>/src/tools/gn/label.cc#Resolve
-  # //base/test:test_support(//build/toolchain/win:msvc)
-  path_separator = FindFirstOf(gn_target_name, (':', '('))
-  location = None
-  name = None
-  toolchain = None
-  if not path_separator:
-    location = gn_target_name[2:]
-  else:
-    location = gn_target_name[2:path_separator]
-    toolchain_separator = gn_target_name.find('(', path_separator)
-    if toolchain_separator == -1:
-      name = gn_target_name[path_separator + 1:]
-    else:
-      if toolchain_separator > path_separator:
-        name = gn_target_name[path_separator + 1:toolchain_separator]
-      assert gn_target_name.endswith(')')
-      toolchain = gn_target_name[toolchain_separator + 1:-1]
-  assert location or name
-
-  cmake_target_name = None
-  if location.endswith('/' + name):
-    cmake_target_name = location
-  elif location:
-    cmake_target_name = location + '_' + name
-  else:
-    cmake_target_name = name
-  if toolchain:
-    cmake_target_name += '--' + toolchain
-  return CMakeTargetEscape(cmake_target_name)
-
-
 class Project(object):
   def __init__(self, project_json):
     self.targets = project_json['targets']
     build_settings = project_json['build_settings']
     self.root_path = build_settings['root_path']
-    self.build_path = posixpath.join(self.root_path,
-                                     build_settings['build_dir'][2:])
-    self.object_source_deps = {}
+    self.build_path = self.GetAbsolutePath(build_settings['build_dir'])
 
   def GetAbsolutePath(self, path):
-    if path.startswith("//"):
-      return self.root_path + "/" + path[2:]
+    if path.startswith('//'):
+      return posixpath.join(self.root_path, path[2:])
     else:
       return path
 
   def GetObjectSourceDependencies(self, gn_target_name, object_dependencies):
     """All OBJECT libraries whose sources have not been absorbed."""
-    if gn_target_name in self.object_source_deps:
-      object_dependencies.update(self.object_source_deps[gn_target_name])
-      return
-    target_deps = set()
     dependencies = self.targets[gn_target_name].get('deps', [])
     for dependency in dependencies:
       dependency_type = self.targets[dependency].get('type', None)
       if dependency_type == 'source_set':
-        target_deps.add(dependency)
+        object_dependencies.add(dependency)
       if dependency_type not in gn_target_types_that_absorb_objects:
-        self.GetObjectSourceDependencies(dependency, target_deps)
-    self.object_source_deps[gn_target_name] = target_deps
-    object_dependencies.update(target_deps)
+        self.GetObjectSourceDependencies(dependency, object_dependencies)
 
   def GetObjectLibraryDependencies(self, gn_target_name, object_dependencies):
     """All OBJECT libraries whose libraries have not been absorbed."""
@@ -224,12 +189,44 @@ class Project(object):
         object_dependencies.add(dependency)
         self.GetObjectLibraryDependencies(dependency, object_dependencies)
 
+  def GetCMakeTargetName(self, gn_target_name):
+    # See <chromium>/src/tools/gn/label.cc#Resolve
+    # //base/test:test_support(//build/toolchain/win:msvc)
+    path_separator = FindFirstOf(gn_target_name, (':', '('))
+    location = None
+    name = None
+    toolchain = None
+    if not path_separator:
+      location = gn_target_name[2:]
+    else:
+      location = gn_target_name[2:path_separator]
+      toolchain_separator = gn_target_name.find('(', path_separator)
+      if toolchain_separator == -1:
+        name = gn_target_name[path_separator + 1:]
+      else:
+        if toolchain_separator > path_separator:
+          name = gn_target_name[path_separator + 1:toolchain_separator]
+        assert gn_target_name.endswith(')')
+        toolchain = gn_target_name[toolchain_separator + 1:-1]
+    assert location or name
+
+    cmake_target_name = None
+    if location.endswith('/' + name):
+      cmake_target_name = location
+    elif location:
+      cmake_target_name = location + '_' + name
+    else:
+      cmake_target_name = name
+    if toolchain:
+      cmake_target_name += '--' + toolchain
+    return CMakeTargetEscape(cmake_target_name)
+
 
 class Target(object):
   def __init__(self, gn_target_name, project):
     self.gn_name = gn_target_name
     self.properties = project.targets[self.gn_name]
-    self.cmake_name = GetCMakeTargetName(self.gn_name)
+    self.cmake_name = project.GetCMakeTargetName(self.gn_name)
     self.gn_type = self.properties.get('type', None)
     self.cmake_type = cmake_target_types.get(self.gn_type, None)
 
@@ -252,7 +249,7 @@ def WriteAction(out, target, project, sources, synthetic_dependencies):
 
   if output_directories:
     out.write('  COMMAND ${CMAKE_COMMAND} -E make_directory "')
-    out.write('" "'.join([CMakeStringEscape(d) for d in output_directories]))
+    out.write('" "'.join(map(CMakeStringEscape, output_directories)))
     out.write('"\n')
 
   script = target.properties['script']
@@ -262,7 +259,7 @@ def WriteAction(out, target, project, sources, synthetic_dependencies):
   out.write('"')
   if arguments:
     out.write('\n    "')
-    out.write('"\n    "'.join([CMakeStringEscape(a) for a in arguments]))
+    out.write('"\n    "'.join(map(CMakeStringEscape, arguments)))
     out.write('"')
   out.write('\n')
 
@@ -321,7 +318,7 @@ def WriteActionForEach(out, target, project, sources, synthetic_dependencies):
 
     if output_directories:
       out.write('  COMMAND ${CMAKE_COMMAND} -E make_directory "')
-      out.write('" "'.join([CMakeStringEscape(d) for d in output_directories]))
+      out.write('" "'.join(map(CMakeStringEscape, output_directories)))
       out.write('"\n')
 
     script = target.properties['script']
@@ -333,8 +330,7 @@ def WriteActionForEach(out, target, project, sources, synthetic_dependencies):
     if arguments:
       out.write('\n    "')
       expand = functools.partial(ExpandPlaceholders, source_abs_path)
-      out.write('"\n    "'.join(
-          [CMakeStringEscape(expand(a)) for a in arguments]))
+      out.write('"\n    "'.join(map(CMakeStringEscape, map(expand,arguments))))
       out.write('"')
     out.write('\n')
 
@@ -377,8 +373,15 @@ def WriteCopy(out, target, project, sources, synthetic_dependencies):
   out.write('\n')
 
   for src, dst in zip(inputs, outputs):
-    out.write('  COMMAND ${CMAKE_COMMAND} -E copy "')
-    out.write(CMakeStringEscape(project.GetAbsolutePath(src)))
+    abs_src_path = CMakeStringEscape(project.GetAbsolutePath(src))
+    # CMake distinguishes between copying files and copying directories but
+    # gn does not. We assume if the src has a period in its name then it is
+    # a file and otherwise a directory.
+    if "." in os.path.basename(abs_src_path):
+      out.write('  COMMAND ${CMAKE_COMMAND} -E copy "')
+    else:
+      out.write('  COMMAND ${CMAKE_COMMAND} -E copy_directory "')
+    out.write(abs_src_path)
     out.write('" "')
     out.write(CMakeStringEscape(dst))
     out.write('"\n')
@@ -444,10 +447,19 @@ def WriteCompilerFlags(out, target, project, sources):
   cflags_asm = target.properties.get('asmflags', [])
   cflags_c = target.properties.get('cflags_c', [])
   cflags_cxx = target.properties.get('cflags_cc', [])
-  if 'c' in sources and not any(k in sources for k in ('asm', 'cxx')):
+  cflags_objc = cflags_c[:]
+  cflags_objc.extend(target.properties.get('cflags_objc', []))
+  cflags_objcc = cflags_cxx[:]
+  cflags_objcc.extend(target.properties.get('cflags_objcc', []))
+
+  if 'c' in sources and not any(k in sources for k in ('asm', 'cxx', 'objc', 'objcc')):
     flags.extend(cflags_c)
-  elif 'cxx' in sources and not any(k in sources for k in ('asm', 'c')):
+  elif 'cxx' in sources and not any(k in sources for k in ('asm', 'c', 'objc', 'objcc')):
     flags.extend(cflags_cxx)
+  elif 'objc' in sources and not any(k in sources for k in ('asm', 'c', 'cxx', 'objcc')):
+    flags.extend(cflags_objc)
+  elif 'objcc' in sources and not any(k in sources for k in ('asm', 'c', 'cxx', 'objc')):
+    flags.extend(cflags_objcc)
   else:
     # TODO: This is broken, one cannot generally set properties on files,
     # as other targets may require different properties on the same files.
@@ -457,6 +469,10 @@ def WriteCompilerFlags(out, target, project, sources):
       SetFilesProperty(out, sources['c'], 'COMPILE_FLAGS', cflags_c, ' ')
     if 'cxx' in sources and cflags_cxx:
       SetFilesProperty(out, sources['cxx'], 'COMPILE_FLAGS', cflags_cxx, ' ')
+    if 'objc' in sources and cflags_objc:
+      SetFilesProperty(out, sources['objc'], 'COMPILE_FLAGS', cflags_objc, ' ')
+    if 'objcc' in sources and cflags_objcc:
+      SetFilesProperty(out, sources['objcc'], 'COMPILE_FLAGS', cflags_objcc, ' ')
   if flags:
     SetCurrentTargetProperty(out, 'COMPILE_FLAGS', flags, ' ')
 
@@ -477,11 +493,18 @@ gn_target_types_that_absorb_objects = (
 def WriteSourceVariables(out, target, project):
   # gn separates the sheep from the goats based on file extensions.
   # A full separation is done here because of flag handing (see Compile flags).
-  source_types = {'cxx':[], 'c':[], 'asm':[],
+  source_types = {'cxx':[], 'c':[], 'asm':[], 'objc':[], 'objcc':[],
                   'obj':[], 'obj_target':[], 'input':[], 'other':[]}
 
+  all_sources = target.properties.get('sources', [])
+
+  # As of cmake 3.11 add_library must have sources. If there are
+  # no sources, add empty.cpp as the file to compile.
+  if len(all_sources) == 0:
+    all_sources.append(posixpath.join(project.build_path, 'empty.cpp'))
+
   # TODO .def files on Windows
-  for source in target.properties.get('sources', []):
+  for source in all_sources:
     _, ext = posixpath.splitext(source)
     source_abs_path = project.GetAbsolutePath(source)
     source_types[source_file_types.get(ext, 'other')].append(source_abs_path)
@@ -497,7 +520,7 @@ def WriteSourceVariables(out, target, project):
     object_dependencies = set()
     project.GetObjectSourceDependencies(target.gn_name, object_dependencies)
     for dependency in object_dependencies:
-      cmake_dependency_name = GetCMakeTargetName(dependency)
+      cmake_dependency_name = project.GetCMakeTargetName(dependency)
       obj_target_sources = '$<TARGET_OBJECTS:' + cmake_dependency_name + '>'
       source_types['obj_target'].append(obj_target_sources)
 
@@ -515,8 +538,8 @@ def WriteTarget(out, target, project):
   out.write('\n')
 
   if target.cmake_type is None:
-    print('Target {} has unknown target type {}, skipping.'.format(
-        target.gn_name, target.gn_type))
+    print ('Target %s has unknown target type %s, skipping.' %
+          (        target.gn_name,            target.gn_type ) )
     return
 
   SetVariable(out, 'target', target.cmake_name)
@@ -563,7 +586,7 @@ def WriteTarget(out, target, project):
   for dependency in dependencies:
     gn_dependency_type = project.targets.get(dependency, {}).get('type', None)
     cmake_dependency_type = cmake_target_types.get(gn_dependency_type, None)
-    cmake_dependency_name = GetCMakeTargetName(dependency)
+    cmake_dependency_name = project.GetCMakeTargetName(dependency)
     if cmake_dependency_type.command != 'add_library':
       nonlibraries.add(cmake_dependency_name)
     elif cmake_dependency_type.modifier != 'OBJECT':
@@ -582,7 +605,8 @@ def WriteTarget(out, target, project):
     out.write(')\n')
 
   # Non-OBJECT library dependencies.
-  external_libraries = target.properties.get('libs', [])
+  combined_library_lists = [target.properties.get(key, []) for key in ['libs', 'frameworks']]
+  external_libraries = list(itertools.chain(*combined_library_lists))
   if target.cmake_type.is_linkable and (external_libraries or libraries):
     library_dirs = target.properties.get('lib_dirs', [])
     if library_dirs:
@@ -622,25 +646,41 @@ def WriteTarget(out, target, project):
 
 def WriteProject(project):
   out = open(posixpath.join(project.build_path, 'CMakeLists.txt'), 'w+')
+  extName = posixpath.join(project.build_path, 'CMakeLists.ext')
   out.write('# Generated by gn_to_cmake.py.\n')
-  out.write('cmake_minimum_required(VERSION 2.8.8 FATAL_ERROR)\n')
-  out.write('cmake_policy(VERSION 2.8.8)\n\n')
+  out.write('cmake_minimum_required(VERSION 3.7 FATAL_ERROR)\n')
+  out.write('cmake_policy(VERSION 3.7)\n')
+  out.write('project(Skia)\n\n')
+
+  out.write('file(WRITE "')
+  out.write(CMakeStringEscape(posixpath.join(project.build_path, "empty.cpp")))
+  out.write('")\n')
 
   # Update the gn generated ninja build.
   # If a build file has changed, this will update CMakeLists.ext if
   # gn gen out/config --ide=json --json-ide-script=../../gn/gn_to_cmake.py
   # style was used to create this config.
-  out.write('execute_process(COMMAND ninja -C "')
+  out.write('execute_process(COMMAND\n')
+  out.write('  ninja -C "')
   out.write(CMakeStringEscape(project.build_path))
-  out.write('" build.ninja)\n')
+  out.write('" build.ninja\n')
+  out.write('  RESULT_VARIABLE ninja_result)\n')
+  out.write('if (ninja_result)\n')
+  out.write('  message(WARNING ')
+  out.write('"Regeneration failed running ninja: ${ninja_result}")\n')
+  out.write('endif()\n')
 
-  out.write('include(CMakeLists.ext)\n')
+  out.write('include("')
+  out.write(CMakeStringEscape(extName))
+  out.write('")\n')
+  # This lets Clion find the emscripten header files when working with CanvasKit.
+  out.write('include_directories(SYSTEM $ENV{EMSDK}/upstream/emscripten/system/include/)\n')
   out.close()
 
-  out = open(posixpath.join(project.build_path, 'CMakeLists.ext'), 'w+')
+  out = open(extName, 'w+')
   out.write('# Generated by gn_to_cmake.py.\n')
-  out.write('cmake_minimum_required(VERSION 2.8.8 FATAL_ERROR)\n')
-  out.write('cmake_policy(VERSION 2.8.8)\n')
+  out.write('cmake_minimum_required(VERSION 3.7 FATAL_ERROR)\n')
+  out.write('cmake_policy(VERSION 3.7)\n')
 
   # The following appears to be as-yet undocumented.
   # http://public.kitware.com/Bug/view.php?id=8392
@@ -664,8 +704,17 @@ def WriteProject(project):
   # but gn doesn't escape spaces here (it generates invalid .d files).
   out.write('string(REPLACE " " ";" "gn_deps" ${gn_deps_string})\n')
   out.write('foreach("gn_dep" ${gn_deps})\n')
-  out.write('  configure_file(${gn_dep} "CMakeLists.devnull" COPYONLY)\n')
+  out.write('  configure_file("')
+  out.write(CMakeStringEscape(project.build_path))
+  out.write('${gn_dep}" "CMakeLists.devnull" COPYONLY)\n')
   out.write('endforeach("gn_dep")\n')
+
+  out.write('list(APPEND other_deps "')
+  out.write(CMakeStringEscape(os.path.abspath(__file__)))
+  out.write('")\n')
+  out.write('foreach("other_dep" ${other_deps})\n')
+  out.write('  configure_file("${other_dep}" "CMakeLists.devnull" COPYONLY)\n')
+  out.write('endforeach("other_dep")\n')
 
   for target_name in project.targets.keys():
     out.write('\n')
