@@ -94,9 +94,10 @@ def main():
         out_lines.append(in_line)
 
     if unused_values:
-        print('unused values args:', file=sys.stderr)
-        print('    ' + '\n    '.join(unused_values), file=sys.stderr)
-        return 1
+        pass # Ignore usused values
+        # print('unused values args:', file=sys.stderr)
+        # print('    ' + '\n    '.join(unused_values), file=sys.stderr)
+        # return 1
 
     output = ''.join(out_lines)
 
