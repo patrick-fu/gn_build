@@ -21,3 +21,15 @@ if (target_environment == "") {
 
 assert(target_environment == "simulator" || target_environment == "device" ||
        target_environment == "catalyst")
+
+# The formal iOS variant name (which presented in the XCFramework)
+ios_variant = ""
+if (target_environment == "simulator") {
+  ios_variant = "simulator"
+} else if (target_environment == "device") {
+  ios_variant = "device"
+} else if (target_environment == "catalyst") {
+  ios_variant = "maccatalyst"
+} else {
+  assert(false, "unsupported environment: $target_environment")
+}
