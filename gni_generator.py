@@ -17,7 +17,9 @@ You can run this script directly, or import "generate_gni"
 function from other python script.
 """
 
-DEFAULT_TYPE = ['h', 'c', 'cc', 'cpp', 'hpp', 'm', 'mm']
+DEFAULT_SOURCE_TYPE = ['c', 'cc', 'cpp', 'm', 'mm', 'swift']
+DEFAULT_HEADER_TYPE = ['h', 'hpp']
+DEFAULT_TYPE = DEFAULT_SOURCE_TYPE + DEFAULT_HEADER_TYPE
 
 def collect_files(root_path: str , filelist: List[str] , recursive: bool , include_file_type=DEFAULT_TYPE) -> List[str]:
     """
@@ -104,7 +106,11 @@ def main(argv):
     parser = argparse.ArgumentParser(description=HELP)
     parser.add_argument('root_path', type=str, help='The root sources path to perform generating GNI.')
     parser.add_argument('gni_name', type=str, help='The project or module name for the root path dir.')
+
     parser.add_argument('--include-type', action='store', type=str, nargs='+', default=DEFAULT_TYPE, help='What type of files need to be collected. Defaults to [%s].' % ','.join(DEFAULT_TYPE))
+    parser.add_argument('--source', dest='include_type', action='store_const', const=DEFAULT_SOURCE_TYPE, help='Shortcut for "--include-type %s"' % ' '.join(DEFAULT_SOURCE_TYPE))
+    parser.add_argument('--header', dest='include_type', action='store_const', const=DEFAULT_HEADER_TYPE, help='Shortcut for "--include-type %s"' % ' '.join(DEFAULT_HEADER_TYPE))
+
     parser.add_argument('--no-recursive', default=False, action='store_true', help='Whether disable traverse subfolders recursively. Defaults to True')
     parser.add_argument('--use-related-path', default=True, action='store_true', help='Generate relative file path. Defaults to True')
     parser.add_argument('--abs-path', dest='use_related_path', action='store_const', const=False, help='Generate absolute file path. Defaults to False')
