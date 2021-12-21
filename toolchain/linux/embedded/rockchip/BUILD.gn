@@ -90,3 +90,31 @@ gcc_toolchain("rk3399k") {
     current_os = "linux"
   }
 }
+
+# rockchip-rv1126_rv1109
+gcc_toolchain("rv1126_rv1109") {
+  binprefix = "${rockchip_home}/rv1126_rv1109/buildroot/output/rockchip_rv1126_rv1109_facial_gate/host/bin"
+  toolprefix = "${binprefix}/arm-linux-gnueabihf-"
+
+  sysroot = "--sysroot=${rockchip_home}/rv1126_rv1109/buildroot/output/rockchip_rv1126_rv1109_facial_gate/host/arm-buildroot-linux-gnueabihf/sysroot"
+  flags = "-march=armv7-a -mtune=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mthumb -DLINUX_ROCKCHIP -DARM_LINUX -D_GLIBCXX_USE_C99"
+  extra_envcmd = "export PATH=${sysenv_path}:${binprefix} && export LD_LIBRARY_PATH=${rockchip_home}/rv1126_rv1109/buildroot/output/rockchip_rv1126_rv1109_facial_gate/host/lib &&"
+
+  extra_cflags = "${sysroot} ${flags}"
+  extra_cxxflags = "${sysroot} ${flags}"
+  extra_ldflags = "${sysroot}"
+
+  cc = "${toolprefix}gcc"
+  cxx = "${toolprefix}g++"
+
+  ar = "${toolprefix}ar"
+  ld = cxx
+  nm = "${toolprefix}nm"
+  strip = "${toolprefix}strip"
+  readelf = "${toolprefix}readelf"
+
+  toolchain_args = {
+    current_cpu = "arm"
+    current_os = "linux"
+  }
+}
