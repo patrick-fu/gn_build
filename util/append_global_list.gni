@@ -5,6 +5,9 @@
 
 # Template to append some string values to a global list file
 #
+# Note that it will append values into the "$filename", so you
+# may need to delete the file before each build
+#
 # Arguments:
 #     filename:
 #         (required), string, the global file name, note that it will saved
@@ -12,11 +15,6 @@
 #
 #     values:
 #         (required), list of string, the values to be appended to the file.
-#
-#     expired_seconds:
-#         (optional), int in string format, how many seconds can it take to
-#                     execute "gn gen" command, this value determines how many
-#                     seconds to clean up the specified global variable file.
 #
 # Example:
 #
@@ -37,14 +35,6 @@ template("append_global_list") {
 
   _filename = invoker.filename
 
-  # How many seconds can it take to execute "gn gen" command
-  if (defined(invoker.expired_seconds)) {
-    _expired_seconds = invoker.expired_seconds
-  } else {
-    # Default to 15 seconds, which is generally enough for execute "gn gen"
-    _expired_seconds = "15"
-  }
-
   action(target_name) {
     script = "//build/util/append_global_list.py"
     _stamp_path = "${target_gen_dir}/${target_name}_append_global_list.stamp"
@@ -52,8 +42,6 @@ template("append_global_list") {
     args = [
       "--file",
       rebase_path("$root_gen_dir/$_filename", root_build_dir),
-      "--expired-seconds",
-      _expired_seconds
     ] + invoker.values
   }
 }

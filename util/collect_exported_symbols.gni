@@ -7,15 +7,13 @@ import("//build/util/append_global_list.gni")
 # Template to collect the exported symbols into a global file
 # located in the "$root_gen_dir/exported_symbols_list.txt"
 #
+# Note that it will append symbols into the same file, so you
+# may need to delete the file before each build
+#
 # Arguments:
 #
 #     symbols:
 #         (required), list of string, the symbols to be exported.
-#
-#     expired_seconds:
-#         (optional), int in string format, how many seconds can it take to
-#                     execute "gn gen" command, this value determines how many
-#                     seconds to clean up the specified global variable file.
 #
 # Example:
 #
@@ -32,7 +30,6 @@ template("collect_exported_symbols") {
   assert(defined(invoker.symbols),
          "symbols must be defined for $target_name")
 
-  forward_variables_from(invoker, [ "expired_seconds" ])
   _values = invoker.symbols
 
   append_global_list(target_name) {
