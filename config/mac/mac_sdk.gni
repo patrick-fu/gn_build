@@ -53,6 +53,9 @@ declare_args() {
   # builds with system Xcode to test new SDKs, set this.
   # Don't set this on any bots.
   mac_allow_system_xcode_for_official_builds_for_testing = false
+
+  # Set the framework's CFBundleVersion and CFBundleShortVersionString
+  framework_bundle_version = "1.0"
 }
 
 # Check that the version of macOS SDK used is the one requested when building
