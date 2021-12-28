@@ -52,7 +52,7 @@ template("mac_info_plist") {
       "CHROMIUM_MIN_SYSTEM_VERSION=$mac_min_system_version",
       "XCODE_BUILD=$xcode_build",
       "XCODE_VERSION=$xcode_version",
-      "FRAMEWORK_BUNDLE_VERSION=$framework_bundle_version",
+      "FRAMEWORK_BUNDLE_VERSION=$mac_framework_bundle_version",
     ]
     plist_templates = [
       "//build/config/mac/BuildInfo.plist",

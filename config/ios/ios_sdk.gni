@@ -44,7 +44,7 @@ declare_args() {
   machine_os_build = ""
 
   # Set the framework's CFBundleVersion and CFBundleShortVersionString
-  framework_bundle_version = "1.0"
+  ios_framework_bundle_version = "1.0"
 
   # Set DEVELOPER_DIR while running sdk_info.py.
   ios_sdk_developer_dir = ""

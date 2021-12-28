@@ -543,7 +543,7 @@ template("ios_info_plist") {
       "IOS_DEPLOYMENT_TARGET=$ios_deployment_target",
       "XCODE_BUILD=$xcode_build",
       "XCODE_VERSION=$xcode_version",
-      "FRAMEWORK_BUNDLE_VERSION=$framework_bundle_version",
+      "FRAMEWORK_BUNDLE_VERSION=$ios_framework_bundle_version",
     ]
     plist_templates = [
       "//build/config/ios/BuildInfo.plist",

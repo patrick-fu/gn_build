@@ -55,7 +55,7 @@ declare_args() {
   mac_allow_system_xcode_for_official_builds_for_testing = false
 
   # Set the framework's CFBundleVersion and CFBundleShortVersionString
-  framework_bundle_version = "1.0"
+  mac_framework_bundle_version = "1.0"
 }
 
 # Check that the version of macOS SDK used is the one requested when building
