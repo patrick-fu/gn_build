@@ -62,7 +62,7 @@ def main():
     # Matches e.g. '${FOO}' or '@FOO@' and captures FOO in group 1 or 2.
     var_re = re.compile(r'\$\{([^}]*)\}|@([^@]*)@')
 
-    with open(args.input) as f:
+    with open(args.input, 'r', encoding='utf8') as f:
         in_lines = f.readlines()
     out_lines = []
     for in_line in in_lines:
@@ -110,11 +110,11 @@ def main():
         return 1
 
     def read(filename):
-        with open(args.output) as f:
+        with open(args.output, 'r', encoding='utf8') as f:
             return f.read()
 
     if not os.path.exists(args.output) or read(args.output) != output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding='utf8') as f:
             f.write(output)
         os.chmod(args.output, os.stat(args.input).st_mode & 0o777)
 
