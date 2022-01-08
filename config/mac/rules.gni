@@ -445,7 +445,7 @@ template("mac_framework_bundle") {
 
   _framework_public_config = _target_name + "_public_config"
   config(_framework_public_config) {
-    visibility = [ ":$_framework_target" ]
+    visibility = [ ":$_framework_target+link" ]
     framework_dirs = [ root_out_dir ]
     frameworks = [ _framework_name ]
   }
@@ -579,6 +579,10 @@ template("mac_app_bundle") {
   } else if (_package_type == "xpc") {
     _output_extension = "xpc"
     _product_type = "com.apple.product-type.xpc-service"
+    _write_pkg_info = false
+  } else if (_package_type == "bundle") {
+    _output_extension = "bundle"
+    _product_type = "com.apple.product-type.bundle"
     _write_pkg_info = false
   } else {
     assert(false, "Unsupported packge_type: " + packge_type)
