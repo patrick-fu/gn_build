@@ -195,6 +195,12 @@ template("apple_toolchain") {
       dsym_switch = ""
     }
 
+    if (generate_linker_map) {
+      linker_map_switch = " -Wl,-map,{{root_out_dir}}/{{target_output_name}}.map "
+    } else {
+      linker_map_switch = ""
+    }
+
     if (_save_unstripped_output) {
       _unstripped_output = "{{root_out_dir}}/{{target_output_name}}{{output_extension}}.unstripped"
     }
@@ -318,6 +324,7 @@ template("apple_toolchain") {
       # setting your own install_name in "ldflags"
       link_command += " -Wl,-install_name,@rpath/\"{{target_output_name}}{{output_extension}}\" "
       link_command += dsym_switch
+      link_command += linker_map_switch
       link_command += "{{ldflags}} -o \"$dylib\" -Wl,-filelist,\"$rspfile\" {{frameworks}} {{swiftmodules}} {{solibs}} {{libs}}"
 
       replace_command = "if ! cmp -s \"$temporary_tocname\" \"$tocname\"; then mv \"$temporary_tocname\" \"$tocname\""

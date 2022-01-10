@@ -22,7 +22,7 @@ declare_args() {
   use_xcode_clang = target_os == "ios" || target_os == "mac" # Use Xcode clang for iOS/macOS (patrickfu@zego.im)
 
   # Used for binary size analysis.
-  generate_linker_map = is_android && is_official_build
+  generate_linker_map = (is_android || is_ios) && is_official_build
 
   # If this is set to true, MSVC's cc/cxx would not use '/showIncludes' argument.
   no_show_includes = false
@@ -34,8 +34,8 @@ if (generate_linker_map) {
              "true or is_chromecast = true")
   assert(current_os == "android" || current_os == "linux" ||
              target_os == "android" || target_os == "linux" ||
-             target_os == "chromeos",
-         "Linker map files should only be generated for Android, Linux, " +
+             target_os == "chromeos" || target_os == "ios",
+         "Linker map files should only be generated for Android, Linux, iOS, " +
              "or ChromeOS.")
 }
 
