@@ -1523,6 +1523,14 @@ config("default_warnings") {
 
       "/wd4715",  # 'function' : not all control paths return a value'
                   # MSVC does not analyze switch (enum) for completeness.
+
+      # The file contains a character that cannot be represented in the current
+      # code page (number). Save the file in Unicode format to prevent data loss.
+      "/wd4819",
+
+      # The compiler ignored an unrecognized pragma. Be sure the pragma is
+      # allowed by the compiler you are using.
+      "/wd4068",
     ]
 
     cflags_cc += [
