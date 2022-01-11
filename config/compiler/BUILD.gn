@@ -594,7 +594,7 @@ config("compiler") {
       # TODO(thomasanderson): Replace usages of ##__VA_ARGS__ with the
       # standard-compliant __VA_OPT__ added by C++20, and switch the gcc build
       # to -std=c*.
-      
+
       # standard_prefix = "gnu"
       standard_prefix = "c"
     }
@@ -1531,6 +1531,10 @@ config("default_warnings") {
       # The compiler ignored an unrecognized pragma. Be sure the pragma is
       # allowed by the compiler you are using.
       "/wd4068",
+
+      # The file contains a character starting at offset 0x566 that is
+      # illegal in the current source character set (codepage 65001)
+      "/wd4828",
     ]
 
     cflags_cc += [
