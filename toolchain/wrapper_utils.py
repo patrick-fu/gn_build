@@ -47,7 +47,6 @@ def CommandToRun(command):
   """
   if command[0].startswith(_BAT_PREFIX):
     command = command[0].split(None, 3) + command[1:]
-  print('[linker_wrapper] %s' % ' '.join(command))
   return command
 
 
@@ -71,6 +70,7 @@ def RunLinkWithOptionalMapFile(command, env=None, map_file=None):
   elif map_file:
     command.append('-Wl,-Map,' + map_file)
 
+  print('[linker_wrapper] %s' % ' '.join(command))
   result = subprocess.call(command, env=env)
 
   if tmp_map_path and result == 0:
