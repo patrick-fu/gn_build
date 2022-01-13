@@ -614,25 +614,7 @@ def WriteTarget(out, target, project):
 
     system_libraries = []
     for external_library in external_libraries:
-      if '/' in external_library:
-        libraries.add(project.GetAbsolutePath(external_library))
-      else:
-        if external_library.endswith('.framework'):
-          external_library = external_library[:-len('.framework')]
-        system_library = 'library__' + external_library
-        if library_dirs:
-          system_library = system_library + '__for_${target}'
-        out.write('find_library("')
-        out.write(CMakeStringEscape(system_library))
-        out.write('" "')
-        out.write(CMakeStringEscape(external_library))
-        out.write('"')
-        if library_dirs:
-          out.write(' PATHS "')
-          WriteVariable(out, '${target}__library_directories')
-          out.write('"')
-        out.write(')\n')
-        system_libraries.append(system_library)
+      libraries.add(project.GetAbsolutePath(external_library))
     out.write('target_link_libraries("${target}"')
     for library in libraries:
       out.write('\n  "')
