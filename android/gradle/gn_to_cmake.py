@@ -254,7 +254,7 @@ def WriteAction(out, target, project, sources, synthetic_dependencies):
 
   script = target.properties['script']
   arguments = target.properties['args']
-  out.write('  COMMAND python "')
+  out.write('  COMMAND python3 "')
   out.write(CMakeStringEscape(project.GetAbsolutePath(script)))
   out.write('"')
   if arguments:
@@ -324,7 +324,7 @@ def WriteActionForEach(out, target, project, sources, synthetic_dependencies):
     script = target.properties['script']
     # TODO: need to expand {{xxx}} in arguments
     arguments = target.properties['args']
-    out.write('  COMMAND python "')
+    out.write('  COMMAND python3 "')
     out.write(CMakeStringEscape(project.GetAbsolutePath(script)))
     out.write('"')
     if arguments:
