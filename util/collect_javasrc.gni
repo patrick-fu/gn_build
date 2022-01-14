@@ -1,0 +1,40 @@
+# Copyright 2021 Patrick Fu. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/util/append_global_list.gni")
+
+# Template to collect the java src dir path into a global file
+# located in the "$root_gen_dir/javasrc_dirs.txt"
+#
+# Note that it will append paths into the same file, so you
+# may need to delete the file before each build
+#
+# Arguments:
+#
+#     sources:
+#         (required), list of string, the dir paths to be collected.
+#
+# Example:
+#
+#     collect_javasrc("my_javasrc") {
+#       sources = [
+#         "./android/java",
+#         "./android/public_java",
+#       ]
+#     }
+#
+template("collect_javasrc") {
+  assert(defined(invoker.sources),
+         "sources must be defined for $target_name")
+
+  _values = []
+  foreach(item, invoker.sources) {
+    _values += [ rebase_path(item) ]
+  }
+
+  append_global_list(target_name) {
+    filename = "javasrc_dirs.txt"
+    values = _values
+  }
+}
