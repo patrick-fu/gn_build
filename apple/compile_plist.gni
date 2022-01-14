@@ -49,8 +49,8 @@ template("compile_plist") {
     args = [
              "merge",
              "-f=" + invoker.format,
-             "-o=" + rebase_path(_merged_name, root_build_dir),
-           ] + rebase_path(invoker.plist_templates, root_build_dir)
+             "-o=" + rebase_path(_merged_name),
+           ] + rebase_path(invoker.plist_templates)
   }
 
   action(target_name) {
@@ -65,8 +65,8 @@ template("compile_plist") {
     args = [
       "substitute",
       "-f=" + invoker.format,
-      "-o=" + rebase_path(_output_name, root_build_dir),
-      "-t=" + rebase_path(_merged_name, root_build_dir),
+      "-o=" + rebase_path(_output_name),
+      "-t=" + rebase_path(_merged_name),
     ]
     foreach(_substitution, invoker.substitutions) {
       args += [ "-s=$_substitution" ]

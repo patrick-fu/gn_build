@@ -34,8 +34,8 @@ template("write_cmake_config") {
     outputs = [ invoker.output ]
     args = [
              "-o",
-             rebase_path(outputs[0], root_build_dir),
-             rebase_path(sources[0], root_build_dir),
+             rebase_path(outputs[0]),
+             rebase_path(sources[0]),
            ] + invoker.values
 
     forward_variables_from(invoker,

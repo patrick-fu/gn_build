@@ -281,8 +281,8 @@ template("mac_framework_bundle") {
 
       args = [
                 rebase_path(_header_map_filename),
-                rebase_path(_framework_base_dir, root_build_dir),
-              ] + rebase_path(sources, root_build_dir)
+                rebase_path(_framework_base_dir),
+              ] + rebase_path(sources)
     }
 
     _create_module_map_target = _target_name + "_module_map"

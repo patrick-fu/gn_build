@@ -238,9 +238,9 @@ action("xctest_runner_without_arm64e") {
   outputs = [ "$target_out_dir/XCTRunner" ]
   args = [
     "--output",
-    rebase_path(outputs[0], root_build_dir),
+    rebase_path(outputs[0]),
     "--input",
-    rebase_path(sources[0], root_build_dir),
+    rebase_path(sources[0]),
     "--xcode-version",
     xcode_version,
   ]
